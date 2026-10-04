@@ -1,0 +1,25 @@
+Builds/VisualStudio2017/Dexed.vcxproj.user
+Builds/VisualStudio2017/Dexed.sdf
+Builds/VisualStudio2017/Debug
+Builds/VisualStudio2017/Release
+Builds/VisualStudio2017/x64
+Builds/VisualStudio2017/Dexed.vcxproj.filters
+Builds/VisualStudio2017/
+.vs/
+*.exe
+
+JuceLibraryCode/
+Builds/
+products/
+
+.DS_Store
+build*/
+.cache/
+
+# CLION
+.idea
+cmake-build-*
+ignore/
+# Downloaded release-validation tools
+/tools/pluginval/cache/
+/dist/

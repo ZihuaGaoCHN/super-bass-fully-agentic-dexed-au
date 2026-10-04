@@ -1,0 +1,20 @@
+cmake_minimum_required(VERSION 3.22)
+
+foreach(REQUIRED IN ITEMS OUTPUT_FILE VERSION PLATFORM ARCHITECTURES GIT_COMMIT)
+    if(NOT DEFINED ${REQUIRED} OR "${${REQUIRED}}" STREQUAL "")
+        message(FATAL_ERROR "${REQUIRED} is required")
+    endif()
+endforeach()
+
+string(REPLACE "," "\", \"" ARCHITECTURE_JSON "${ARCHITECTURES}")
+file(WRITE "${OUTPUT_FILE}" "{\n")
+file(APPEND "${OUTPUT_FILE}" "  \"product\": \"Agentic Dexed\",\n")
+file(APPEND "${OUTPUT_FILE}" "  \"version\": \"${VERSION}\",\n")
+file(APPEND "${OUTPUT_FILE}" "  \"platform\": \"${PLATFORM}\",\n")
+file(APPEND "${OUTPUT_FILE}" "  \"architectures\": [\"${ARCHITECTURE_JSON}\"],\n")
+file(APPEND "${OUTPUT_FILE}" "  \"bundle_id\": \"com.agenticdexed.AgenticDexed\",\n")
+file(APPEND "${OUTPUT_FILE}" "  \"plugin_code\": \"AgDx\",\n")
+file(APPEND "${OUTPUT_FILE}" "  \"manufacturer_code\": \"Agnt\",\n")
+file(APPEND "${OUTPUT_FILE}" "  \"git_commit\": \"${GIT_COMMIT}\"\n")
+file(APPEND "${OUTPUT_FILE}" "}\n")
+

@@ -1,0 +1,21 @@
+event: response.created
+data: {"response":{"id":"resp_123"}}
+
+event: response.output_text.delta
+data: {"delta":"Warm "}
+
+event: response.output_item.added
+data: {"item":{"type":"function_call","id":"item_1","call_id":"call_1","name":"apply_parameter_patch","arguments":""}}
+
+event: response.function_call_arguments.delta
+data: {"item_id":"item_1","delta":"{\"value\":"}
+
+event: response.function_call_arguments.delta
+data: {"item_id":"item_1","delta":"88}"}
+
+event: response.function_call_arguments.done
+data: {"item_id":"item_1","arguments":"{\"value\":88}"}
+
+event: response.completed
+data: {"response":{"id":"resp_123"}}
+

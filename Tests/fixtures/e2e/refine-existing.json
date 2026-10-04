@@ -1,0 +1,25 @@
+{
+  "name": "refine an existing voice",
+  "prompt": "Refine this existing voice without replacing its character",
+  "steps": [
+    {
+      "tool": "get_synth_state",
+      "call_id": "refine-state",
+      "arguments": { "scope": "all", "group": null, "ids": null }
+    },
+    {
+      "tool": "apply_parameter_patch",
+      "call_id": "refine-change",
+      "arguments": {
+        "transaction_id": "e2e-refine-change",
+        "base_revision": 0,
+        "reason": "add a bounded amount of definition",
+        "mode": "live",
+        "operations": [
+          { "parameter_id": "operator.1.output_level", "value": 85 }
+        ]
+      }
+    },
+    { "final": "The existing voice has a little more definition." }
+  ]
+}

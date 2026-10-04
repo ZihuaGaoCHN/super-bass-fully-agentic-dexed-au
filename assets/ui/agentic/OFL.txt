@@ -1,0 +1,3 @@
+Silkscreen is distributed by its authors under the SIL Open Font License 1.1.
+License text: https://openfontlicense.org/open-font-license-official-text/
+Source: https://fonts.google.com/specimen/Silkscreen

@@ -1,0 +1,8 @@
+{
+  "platform": "macos",
+  "reference": [1280, 760],
+  "minimum": [960, 640],
+  "scale150": [1920, 1140],
+  "scenarios": ["normal", "streaming", "proposal", "conflict", "missing_key", "network_error", "clipping"],
+  "comparison": "exact geometry plus semantic colour and deterministic same-run pixel digest"
+}

@@ -1,0 +1,36 @@
+{
+  "name": "init voice to requested target",
+  "prompt": "Create a focused electric bass from the initialized voice",
+  "steps": [
+    {
+      "tool": "get_synth_state",
+      "call_id": "init-state",
+      "arguments": { "scope": "all", "group": null, "ids": null }
+    },
+    {
+      "tool": "apply_parameter_patch",
+      "call_id": "init-change",
+      "arguments": {
+        "transaction_id": "e2e-init-change",
+        "base_revision": 0,
+        "reason": "focus the initialized bass voice",
+        "mode": "live",
+        "operations": [
+          { "parameter_id": "global.algorithm", "value": 7 },
+          { "parameter_id": "global.feedback", "value": 4 }
+        ]
+      }
+    },
+    {
+      "tool": "audition_patch",
+      "call_id": "init-audition",
+      "arguments": {
+        "phrase": "single_note",
+        "midi_note": 48,
+        "velocity": 100,
+        "duration_seconds": 0.25
+      }
+    },
+    { "final": "The initialized voice is now a focused electric bass." }
+  ]
+}

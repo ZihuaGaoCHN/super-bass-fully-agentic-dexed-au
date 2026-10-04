@@ -1,0 +1,12 @@
+{
+  "platform": "macos",
+  "pages": ["sound", "modulation", "effects", "presets", "generate", "system"],
+  "breakpoints": [[960, 760], [1280, 760], [1920, 1140]],
+  "scales": [100, 125, 150, 200],
+  "states": [
+    "overlay", "warning", "error", "clipping", "missing_key",
+    "process_only_key", "agent_streaming", "proposal", "conflict",
+    "preset_corruption", "midi_device_loss", "non_standard_tuning"
+  ],
+  "comparison": "exact geometry, same-run pixel digest, semantic colours, and contact-sheet inspection"
+}

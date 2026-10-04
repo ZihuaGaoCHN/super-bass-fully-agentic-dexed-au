@@ -1,0 +1,40 @@
+{
+  "name": "detect and correct silence",
+  "prompt": "Find why this patch is silent and make it audible",
+  "steps": [
+    {
+      "tool": "audition_patch",
+      "call_id": "silent-audition",
+      "arguments": {
+        "phrase": "single_note",
+        "midi_note": 60,
+        "velocity": 100,
+        "duration_seconds": 0.25
+      }
+    },
+    {
+      "tool": "apply_parameter_patch",
+      "call_id": "silence-fix",
+      "arguments": {
+        "transaction_id": "e2e-silence-fix",
+        "base_revision": 0,
+        "reason": "restore an audible carrier output",
+        "mode": "live",
+        "operations": [
+          { "parameter_id": "operator.1.output_level", "value": 90 }
+        ]
+      }
+    },
+    {
+      "tool": "audition_patch",
+      "call_id": "corrected-audition",
+      "arguments": {
+        "phrase": "single_note",
+        "midi_note": 60,
+        "velocity": 100,
+        "duration_seconds": 0.25
+      }
+    },
+    { "final": "The silent carrier is restored and the patch is audible." }
+  ]
+}

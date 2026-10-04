@@ -1,0 +1,12 @@
+event: response.created
+data: {"response":{"id":"resp_tool"}}
+
+event: response.output_item.added
+data: {"item":{"type":"function_call","id":"item_tool","call_id":"call_tool","name":"get_synth_state","arguments":"{}"}}
+
+event: response.output_item.done
+data: {"item":{"type":"function_call","id":"item_tool","call_id":"call_tool","name":"get_synth_state","arguments":"{}"}}
+
+event: response.completed
+data: {"response":{"id":"resp_tool"}}
+

@@ -1,0 +1,231 @@
+name: Release Agentic Dexed
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+jobs:
+  windows-x64:
+    runs-on: windows-2022
+    environment: release-windows
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+      - name: Configure
+        run: >-
+          cmake -S . -B build/windows
+          -G "Visual Studio 17 2022" -A x64
+          -DAGENTIC_DEXED_BUILD_TESTS=ON
+          -DAGENTIC_DEXED_COPY_PLUGIN_AFTER_BUILD=OFF
+      - name: Build and test
+        run: |
+          cmake --build build/windows --config Release --parallel --target AgenticDexedTests AgenticDexed_VST3 AgenticDexed_Standalone
+          ctest --test-dir build/windows -C Release --output-on-failure --output-junit build/windows/ctest-results.xml
+      - name: Validate VST3 at release strictness
+        shell: pwsh
+        run: ./scripts/validate-plugin.ps1 -PluginPath "./build/windows/Source/AgenticDexed_artefacts/Release/VST3/Agentic Dexed.vst3" -Strictness 8 -OutputDirectory ./build/windows/validation
+      - name: Install packaging tool
+        run: choco install innosetup --no-progress -y
+      - name: Package unsigned stage
+        shell: pwsh
+        run: ./scripts/package-windows.ps1 -BuildDirectory ./build/windows -OutputDirectory ./dist/windows -Unsigned
+      - name: Materialize signing credential
+        shell: pwsh
+        env:
+          CERTIFICATE_B64: ${{ secrets.WINDOWS_SIGNING_CERTIFICATE_B64 }}
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:CERTIFICATE_B64)) { throw "missing signing credential: WINDOWS_SIGNING_CERTIFICATE_B64" }
+          $certificatePath = Join-Path $env:RUNNER_TEMP "agentic-dexed-signing.pfx"
+          [IO.File]::WriteAllBytes($certificatePath, [Convert]::FromBase64String($env:CERTIFICATE_B64))
+          "WINDOWS_CERTIFICATE_PATH=$certificatePath" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+      - name: Sign final Windows payloads
+        shell: pwsh
+        env:
+          WINDOWS_CERTIFICATE_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
+        run: ./scripts/sign-windows.ps1 -StageRoot ./dist/windows/Agentic-Dexed-1.0.1-windows-x64 -OutputDirectory ./dist/windows
+      - name: Verify Windows signatures
+        shell: pwsh
+        run: ./scripts/verify-signatures.ps1 -ReleaseDirectory ./dist/windows
+      - name: Upload Windows release candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: agentic-dexed-windows-x64-release
+          if-no-files-found: error
+          path: |
+            dist/windows/Agentic-Dexed-*-portable.zip
+            dist/windows/Agentic-Dexed-*-setup.exe
+      - name: Upload Windows validation logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: agentic-dexed-windows-validation
+          if-no-files-found: error
+          path: build/windows/validation/**
+
+  macos-build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x86_64
+            runner: macos-15-intel
+          - arch: arm64
+            runner: macos-15
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+      - name: Configure
+        run: >-
+          cmake -S . -B build
+          -G Xcode
+          -DCMAKE_OSX_ARCHITECTURES=${{ matrix.arch }}
+          -DAGENTIC_DEXED_BUILD_TESTS=ON
+          -DAGENTIC_DEXED_COPY_PLUGIN_AFTER_BUILD=OFF
+      - name: Build and test
+        run: |
+          cmake --build build --config Release --parallel --target AgenticDexedTests AgenticDexed_VST3 AgenticDexed_Standalone
+          ctest --test-dir build -C Release --output-on-failure --output-junit build/ctest-results.xml
+      - name: Validate VST3 at release strictness
+        run: bash ./scripts/validate-plugin.sh --plugin-path "./build/Source/AgenticDexed_artefacts/Release/VST3/Agentic Dexed.vst3" --strictness 8 --output-dir ./build/validation
+      - name: Stage architecture output
+        run: |
+          mkdir -p release-arch/Source/AgenticDexed_artefacts/Release
+          ditto "build/Source/AgenticDexed_artefacts/Release/VST3" "release-arch/Source/AgenticDexed_artefacts/Release/VST3"
+          ditto "build/Source/AgenticDexed_artefacts/Release/Standalone" "release-arch/Source/AgenticDexed_artefacts/Release/Standalone"
+          tar -czf "agentic-dexed-macos-${{ matrix.arch }}.tar.gz" -C release-arch .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: agentic-dexed-macos-${{ matrix.arch }}-unsigned
+          if-no-files-found: error
+          path: agentic-dexed-macos-${{ matrix.arch }}.tar.gz
+      - uses: actions/upload-artifact@v4
+        with:
+          name: agentic-dexed-macos-${{ matrix.arch }}-validation
+          if-no-files-found: error
+          path: build/validation/**
+
+  macos-universal:
+    needs: macos-build
+    runs-on: macos-15
+    environment: release-macos
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+      - uses: actions/download-artifact@v4
+        with:
+          name: agentic-dexed-macos-x86_64-unsigned
+          path: build-x86
+      - uses: actions/download-artifact@v4
+        with:
+          name: agentic-dexed-macos-arm64-unsigned
+          path: build-arm
+      - name: Restore architecture outputs
+        run: |
+          mkdir -p build-x86/release-arch build-arm/release-arch
+          tar -xzf build-x86/agentic-dexed-macos-x86_64.tar.gz -C build-x86/release-arch
+          tar -xzf build-arm/agentic-dexed-macos-arm64.tar.gz -C build-arm/release-arch
+      - name: Package Universal stage
+        run: bash ./scripts/package-macos.sh --x86-build ./build-x86/release-arch --arm-build ./build-arm/release-arch --output-root ./dist/macos --unsigned
+      - name: Import signing credentials
+        env:
+          APP_CERT_B64: ${{ secrets.MACOS_APPLICATION_CERTIFICATE_B64 }}
+          APP_CERT_PASSWORD: ${{ secrets.MACOS_APPLICATION_CERTIFICATE_PASSWORD }}
+          INSTALLER_CERT_B64: ${{ secrets.MACOS_INSTALLER_CERTIFICATE_B64 }}
+          INSTALLER_CERT_PASSWORD: ${{ secrets.MACOS_INSTALLER_CERTIFICATE_PASSWORD }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APPLE_APP_PASSWORD: ${{ secrets.APPLE_APP_PASSWORD }}
+        run: |
+          for name in APP_CERT_B64 APP_CERT_PASSWORD INSTALLER_CERT_B64 INSTALLER_CERT_PASSWORD APPLE_ID APPLE_TEAM_ID APPLE_APP_PASSWORD; do
+            test -n "${!name:-}" || { echo "missing signing credential: ${name}" >&2; exit 2; }
+          done
+          keychain="$RUNNER_TEMP/agentic-dexed.keychain-db"
+          keychain_password="$(openssl rand -hex 24)"
+          security create-keychain -p "$keychain_password" "$keychain"
+          security set-keychain-settings -lut 21600 "$keychain"
+          security unlock-keychain -p "$keychain_password" "$keychain"
+          printf '%s' "$APP_CERT_B64" | base64 --decode > "$RUNNER_TEMP/application.p12"
+          printf '%s' "$INSTALLER_CERT_B64" | base64 --decode > "$RUNNER_TEMP/installer.p12"
+          security import "$RUNNER_TEMP/application.p12" -k "$keychain" -P "$APP_CERT_PASSWORD" -T /usr/bin/codesign
+          security import "$RUNNER_TEMP/installer.p12" -k "$keychain" -P "$INSTALLER_CERT_PASSWORD" -T /usr/bin/productbuild -T /usr/bin/pkgbuild
+          security list-keychains -d user -s "$keychain"
+          security set-key-partition-list -S apple-tool:,apple: -s -k "$keychain_password" "$keychain"
+          xcrun notarytool store-credentials agentic-dexed-ci --apple-id "$APPLE_ID" --team-id "$APPLE_TEAM_ID" --password "$APPLE_APP_PASSWORD" --keychain "$keychain"
+          echo "MACOS_NOTARY_PROFILE=agentic-dexed-ci" >> "$GITHUB_ENV"
+      - name: Sign, notarize, and staple macOS packages
+        env:
+          MACOS_APPLICATION_IDENTITY: ${{ secrets.MACOS_APPLICATION_IDENTITY }}
+          MACOS_INSTALLER_IDENTITY: ${{ secrets.MACOS_INSTALLER_IDENTITY }}
+        run: bash ./scripts/sign-macos.sh --stage-root ./dist/macos/Agentic-Dexed-1.0.1-macos-universal --output-root ./dist/macos
+      - name: Verify macOS signatures
+        run: bash ./scripts/verify-signatures.sh ./dist/macos
+      - uses: actions/upload-artifact@v4
+        with:
+          name: agentic-dexed-macos-universal-release
+          if-no-files-found: error
+          path: |
+            dist/macos/Agentic-Dexed-*.zip
+            dist/macos/Agentic-Dexed-*.pkg
+
+  publish:
+    needs: [windows-x64, macos-universal]
+    runs-on: macos-15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+      - uses: actions/download-artifact@v4
+        with:
+          name: agentic-dexed-windows-x64-release
+          path: incoming/windows
+      - uses: actions/download-artifact@v4
+        with:
+          name: agentic-dexed-macos-universal-release
+          path: incoming/macos
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: agentic-dexed-*-validation
+          path: incoming/validation
+          merge-multiple: false
+      - name: Assemble final release directory
+        run: |
+          mkdir -p dist/release/validation
+          find incoming/windows incoming/macos -type f \( -name '*.zip' -o -name '*.pkg' -o -name '*-setup.exe' \) -exec cp {} dist/release/ \;
+          cp -R incoming/validation/. dist/release/validation/
+      - name: Redact CI workspace paths from validation logs
+        run: cmake -DLOG_ROOT="${GITHUB_WORKSPACE}/dist/release/validation" -P scripts/SanitizeValidationLogs.cmake
+      - name: Archive sanitized validation logs
+        run: (cd dist/release && cmake -E tar cf Agentic-Dexed-1.0.1-validation-logs.zip --format=zip validation)
+      - name: Package corresponding source
+        run: bash ./scripts/package-source.sh --output-directory ./dist/release
+      - name: Verify corresponding source
+        run: cmake "-DSOURCE_ARCHIVE=${GITHUB_WORKSPACE}/dist/release/Agentic-Dexed-1.0.1-source.zip" -P Tests/cmake/VerifySourceBundle.cmake
+      - name: Scan final artifacts and generate manifests
+        run: bash ./scripts/scan-release.sh --release-directory ./dist/release
+      - name: Publish immutable tag artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          gh release create "${GITHUB_REF_NAME}"
+          dist/release/Agentic-Dexed-*.zip
+          dist/release/Agentic-Dexed-*.tar.gz
+          dist/release/Agentic-Dexed-*.pkg
+          dist/release/Agentic-Dexed-*-setup.exe
+          dist/release/SHA256SUMS
+          dist/release/release-manifest.json
+          dist/release/release-scan-report.json
+          --verify-tag
+          --generate-notes

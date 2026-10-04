@@ -1,0 +1,83 @@
+cmake_minimum_required(VERSION 3.22)
+
+if(NOT DEFINED PACKAGE_ROOT OR PACKAGE_ROOT STREQUAL "")
+    message(FATAL_ERROR "PACKAGE_ROOT is required")
+endif()
+get_filename_component(PACKAGE_ROOT "${PACKAGE_ROOT}" ABSOLUTE)
+if(NOT IS_DIRECTORY "${PACKAGE_ROOT}")
+    message(FATAL_ERROR "Package root does not exist: ${PACKAGE_ROOT}")
+endif()
+
+file(GLOB_RECURSE MANIFESTS "${PACKAGE_ROOT}/*/manifest.json")
+list(LENGTH MANIFESTS MANIFEST_COUNT)
+if(NOT MANIFEST_COUNT EQUAL 1)
+    message(FATAL_ERROR "Expected exactly one staged manifest.json, found ${MANIFEST_COUNT}")
+endif()
+list(GET MANIFESTS 0 MANIFEST)
+get_filename_component(STAGE_ROOT "${MANIFEST}" DIRECTORY)
+
+foreach(REQUIRED IN ITEMS LICENSE THIRD_PARTY_NOTICES.md README.md architecture.txt)
+    if(NOT EXISTS "${STAGE_ROOT}/${REQUIRED}")
+        message(FATAL_ERROR "Package is missing ${REQUIRED}")
+    endif()
+endforeach()
+
+file(READ "${MANIFEST}" MANIFEST_JSON)
+foreach(EXPECTED IN ITEMS
+        "\"product\": \"Agentic Dexed\""
+        "\"version\": \"1.0.1\""
+        "\"bundle_id\": \"com.agenticdexed.AgenticDexed\""
+        "\"plugin_code\": \"AgDx\"")
+    if(NOT MANIFEST_JSON MATCHES "${EXPECTED}")
+        message(FATAL_ERROR "Package manifest is missing ${EXPECTED}")
+    endif()
+endforeach()
+
+file(GLOB_RECURSE ALL_ENTRIES LIST_DIRECTORIES true "${STAGE_ROOT}/*")
+set(VST3_DIRECTORIES "")
+foreach(ENTRY IN LISTS ALL_ENTRIES)
+    if(IS_DIRECTORY "${ENTRY}" AND ENTRY MATCHES "Agentic Dexed\\.vst3$")
+        list(APPEND VST3_DIRECTORIES "${ENTRY}")
+    endif()
+endforeach()
+list(REMOVE_DUPLICATES VST3_DIRECTORIES)
+list(LENGTH VST3_DIRECTORIES VST3_COUNT)
+if(NOT VST3_COUNT EQUAL 1)
+    message(FATAL_ERROR "Expected exactly one Agentic Dexed.vst3 bundle, found ${VST3_COUNT}")
+endif()
+
+if(NOT EXISTS "${STAGE_ROOT}/VST3/Agentic Dexed.vst3")
+    message(FATAL_ERROR "VST3 bundle is not in the canonical package location")
+endif()
+
+file(READ "${STAGE_ROOT}/architecture.txt" ARCHITECTURE_REPORT)
+if(MANIFEST_JSON MATCHES "\"platform\": \"windows\"")
+    if(NOT ARCHITECTURE_REPORT MATCHES "x86_64")
+        message(FATAL_ERROR "Windows package was not verified as x86_64")
+    endif()
+elseif(MANIFEST_JSON MATCHES "\"platform\": \"macos\"")
+    if(NOT ARCHITECTURE_REPORT MATCHES "x86_64" OR
+       NOT ARCHITECTURE_REPORT MATCHES "arm64")
+        message(FATAL_ERROR "macOS package is not Universal x86_64/arm64")
+    endif()
+else()
+    message(FATAL_ERROR "Unknown package platform")
+endif()
+
+set(TEXT_TO_AUDIT "${MANIFEST_JSON}")
+foreach(DOCUMENT IN ITEMS README.md THIRD_PARTY_NOTICES.md architecture.txt)
+    file(READ "${STAGE_ROOT}/${DOCUMENT}" CONTENTS)
+    string(APPEND TEXT_TO_AUDIT "\n${CONTENTS}")
+endforeach()
+file(GLOB_RECURSE IDENTITY_FILES
+    "${STAGE_ROOT}/*.plist"
+    "${STAGE_ROOT}/*.json")
+foreach(IDENTITY_FILE IN LISTS IDENTITY_FILES)
+    file(READ "${IDENTITY_FILE}" CONTENTS LIMIT 1048576)
+    string(APPEND TEXT_TO_AUDIT "\n${CONTENTS}")
+endforeach()
+if(TEXT_TO_AUDIT MATCHES "com\\.digitalsuburban\\.[Dd]exed|PLUGIN_CODE[^\n]*Dexd|Dexd")
+    message(FATAL_ERROR "Package contains a legacy Dexed identity")
+endif()
+
+message(STATUS "Verified Agentic Dexed package layout at ${STAGE_ROOT}")

@@ -1,0 +1,129 @@
+name: Build Agentic Dexed
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  windows-x64:
+    name: Windows x64
+    runs-on: windows-2022
+    steps:
+      - name: Check out source and submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Configure
+        run: >-
+          cmake -S . -B build
+          -G "Visual Studio 17 2022" -A x64
+          -DAGENTIC_DEXED_BUILD_TESTS=ON
+          -DAGENTIC_DEXED_COPY_PLUGIN_AFTER_BUILD=OFF
+
+      - name: Build
+        run: >-
+          cmake --build build --config Release --parallel
+          --target AgenticDexedTests AgenticDexed_VST3 AgenticDexed_Standalone
+
+      - name: Test
+        run: >-
+          ctest --test-dir build -C Release --output-on-failure
+          --output-junit build/ctest-results.xml
+
+      - name: Download pinned pluginval
+        shell: pwsh
+        run: ./scripts/download-pluginval.ps1
+
+      - name: Validate VST3 at strictness 8
+        shell: pwsh
+        run: >-
+          ./scripts/validate-plugin.ps1
+          -PluginPath "./build/Source/AgenticDexed_artefacts/Release/VST3/Agentic Dexed.vst3"
+          -Strictness 8
+          -OutputDirectory ./build/validation
+
+      - name: Upload test logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-x64-test-logs
+          if-no-files-found: warn
+          path: |
+            build/ctest-results.xml
+            build/Testing/Temporary/LastTest.log
+            build/validation/**
+            build/Tests/Release/AgenticDexedTests*
+
+      - name: Upload Windows artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: agentic-dexed-windows-x64
+          if-no-files-found: error
+          path: |
+            build/Source/AgenticDexed_artefacts/Release/VST3/Agentic Dexed.vst3/**
+            build/Source/AgenticDexed_artefacts/Release/Standalone/Agentic Dexed.exe
+
+  macos-arm64:
+    name: macOS arm64
+    runs-on: macos-15
+    steps:
+      - name: Check out source and submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Configure
+        run: >-
+          cmake -S . -B build
+          -G Xcode
+          -DCMAKE_OSX_ARCHITECTURES=arm64
+          -DAGENTIC_DEXED_BUILD_TESTS=ON
+          -DAGENTIC_DEXED_COPY_PLUGIN_AFTER_BUILD=OFF
+
+      - name: Build
+        run: >-
+          cmake --build build --config Release --parallel
+          --target AgenticDexedTests AgenticDexed_VST3 AgenticDexed_Standalone
+
+      - name: Test
+        run: >-
+          ctest --test-dir build -C Release --output-on-failure
+          --output-junit build/ctest-results.xml
+
+      - name: Download pinned pluginval
+        run: bash ./scripts/download-pluginval.sh
+
+      - name: Validate VST3 at strictness 8
+        run: >-
+          bash ./scripts/validate-plugin.sh
+          --plugin-path "./build/Source/AgenticDexed_artefacts/Release/VST3/Agentic Dexed.vst3"
+          --strictness 8
+          --output-dir ./build/validation
+
+      - name: Upload test logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-arm64-test-logs
+          if-no-files-found: warn
+          path: |
+            build/ctest-results.xml
+            build/Testing/Temporary/LastTest.log
+            build/validation/**
+            build/Tests/Release/AgenticDexedTests*
+
+      - name: Archive macOS arm64 artifacts
+        run: >-
+          tar -czf agentic-dexed-macos-arm64.tar.gz
+          -C build/Source/AgenticDexed_artefacts/Release VST3 Standalone
+
+      - name: Upload macOS arm64 artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: agentic-dexed-macos-arm64
+          if-no-files-found: error
+          path: agentic-dexed-macos-arm64.tar.gz
