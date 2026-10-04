@@ -1,3 +1,4 @@
+#include "TestDataPaths.h"
 #include <JuceHeader.h>
 
 #include "PluginProcessor.h"
@@ -131,7 +132,7 @@ public:
        #else
         const auto platform = juce::String("windows");
        #endif
-        const auto manifestFile = juce::File(AGENTIC_DEXED_TEST_SOURCE_DIR)
+        const auto manifestFile = agentic_dexed::test::dataRoot()
             .getChildFile("Tests").getChildFile("golden")
             .getChildFile(platform).getChildFile("workbench-manifest.json");
 
@@ -294,7 +295,7 @@ public:
         capture("state_midi_device_loss");
         editor.overlayHost().close();
 
-        const auto scl = juce::File(AGENTIC_DEXED_TEST_SOURCE_DIR)
+        const auto scl = agentic_dexed::test::dataRoot()
             .getChildFile("libs").getChildFile("tuning-library")
             .getChildFile("tests").getChildFile("data")
             .getChildFile("12-ET-P5.scl");

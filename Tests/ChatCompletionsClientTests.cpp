@@ -1,3 +1,4 @@
+#include "TestDataPaths.h"
 #include <JuceHeader.h>
 
 #include "ScriptedHttpTransport.h"
@@ -20,7 +21,7 @@ using namespace std::chrono_literals;
 std::string loadChatFixture()
 {
     const juce::File file(
-        juce::String(AGENTIC_DEXED_TEST_SOURCE_DIR)
+        agentic_dexed::test::dataRoot().getFullPathName()
         + "/Tests/fixtures/chat-completions/success.sse");
     return file.loadFileAsString().toStdString();
 }

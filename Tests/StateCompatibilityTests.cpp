@@ -1,3 +1,4 @@
+#include "TestDataPaths.h"
 #include "../Source/PluginProcessor.h"
 #include "../Source/state/SynthStateService.h"
 
@@ -31,8 +32,7 @@ public:
     void runTest() override
     {
         beginTest("Upstream state migrates and an Agent edit round-trips every value");
-        const auto fixture = juce::File(
-            AGENTIC_DEXED_TEST_SOURCE_DIR "/Tests/fixtures/upstream-init-state.bin");
+        const auto fixture = agentic_dexed::test::dataRoot().getChildFile("Tests/fixtures/upstream-init-state.bin");
         juce::MemoryBlock legacyState;
         expect(fixture.loadFileAsData(legacyState));
         if (legacyState.isEmpty())

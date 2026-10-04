@@ -1,3 +1,4 @@
+#include "TestDataPaths.h"
 #include "../Source/PluginData.h"
 #include "../Source/PluginProcessor.h"
 #include "../Source/state/SynthStateService.h"
@@ -40,8 +41,7 @@ public:
     void runTest() override
     {
         beginTest("One registered edit preserves every unrelated SysEx byte");
-        const auto fixture = juce::File(
-            AGENTIC_DEXED_TEST_SOURCE_DIR "/Tests/fixtures/upstream-init-state.bin");
+        const auto fixture = agentic_dexed::test::dataRoot().getChildFile("Tests/fixtures/upstream-init-state.bin");
         juce::MemoryBlock fixtureState;
         expect(fixture.loadFileAsData(fixtureState));
         const auto original = fixtureProgram(fixtureState);

@@ -1,3 +1,4 @@
+#include "TestDataPaths.h"
 #include <JuceHeader.h>
 
 #include "ScriptedHttpTransport.h"
@@ -20,7 +21,7 @@ using namespace std::chrono_literals;
 std::string loadFixture(const char* relativePath)
 {
     const juce::File file(
-        juce::String(AGENTIC_DEXED_TEST_SOURCE_DIR) + "/Tests/fixtures/" + relativePath);
+        agentic_dexed::test::dataRoot().getFullPathName() + "/Tests/fixtures/" + relativePath);
     return file.loadFileAsString().toStdString();
 }
 

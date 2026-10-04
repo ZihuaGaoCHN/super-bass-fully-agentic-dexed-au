@@ -1,3 +1,4 @@
+#include "TestDataPaths.h"
 #include "TestMessagePump.h"
 
 #include <JuceHeader.h>
@@ -188,8 +189,7 @@ public:
             return editor.pageHost().presetService().browserFile() == syx;
         }));
 
-        const auto tuningRoot = juce::File(
-            AGENTIC_DEXED_TEST_SOURCE_DIR "/libs/tuning-library/tests/data");
+        const auto tuningRoot = agentic_dexed::test::dataRoot().getChildFile("libs/tuning-library/tests/data");
         editor.handleFilesDropped({
             tuningRoot.getChildFile("12-ET-P5.scl").getFullPathName() });
         expect(editor.currentPage() == WorkspacePage::system);
@@ -210,9 +210,20 @@ public:
         expect(dynamic_cast<MainEditor*>(pluginEditor.getChildComponent(0)) != nullptr);
         expect(&pluginEditor.mainEditor() == pluginEditor.getChildComponent(0));
 
+
+    }
+};
+
+class SourceAuditTests final : public juce::UnitTest
+{
+public:
+    SourceAuditTests() : juce::UnitTest("Product source audit", "SourceAudit") {}
+    void runTest() override
+    {
         beginTest("compiled product manifest contains no legacy UI route or modal dialog");
         const auto sourceRoot = juce::File(AGENTIC_DEXED_TEST_SOURCE_DIR)
                                     .getChildFile("Source");
+        expect(sourceRoot.getChildFile("CMakeLists.txt").existsAsFile(), "Source audit requires its source checkout");
         const auto cmakeText = sourceRoot.getChildFile("CMakeLists.txt")
                                    .loadFileAsString();
         for (const auto& obsolete : {
@@ -230,6 +241,7 @@ public:
         juce::Array<juce::File> productSources;
         sourceRoot.findChildFiles(productSources, juce::File::findFiles, true,
                                   "*.h;*.hpp;*.cpp;*.mm");
+        expect(!productSources.isEmpty(), "Source audit must inspect actual source files");
         for (const auto& file : productSources)
         {
             const auto text = file.loadFileAsString();
@@ -243,6 +255,7 @@ public:
         }
     }
 };
+SourceAuditTests sourceAuditTests;
 
 WorkbenchShellTests workbenchShellTests;
 }

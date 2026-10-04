@@ -1,3 +1,4 @@
+#include "TestDataPaths.h"
 #include "TestMessagePump.h"
 
 #include <JuceHeader.h>
@@ -64,8 +65,7 @@ public:
         expect(service.midiSettings().outputName.isEmpty());
 
         beginTest("valid SCL and KBM update rows and reset restores standard tuning");
-        const auto tuningData = juce::File(
-            AGENTIC_DEXED_TEST_SOURCE_DIR "/libs/tuning-library/tests/data");
+        const auto tuningData = agentic_dexed::test::dataRoot().getChildFile("libs/tuning-library/tests/data");
         expect(service.applyScl(tuningData.getChildFile("12-ET-P5.scl")).ok);
         expect(!service.tuningState().standard);
         expect(!service.tuningState().sclText.isEmpty());

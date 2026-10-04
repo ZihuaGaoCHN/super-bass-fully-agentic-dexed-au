@@ -1,3 +1,4 @@
+#include "TestDataPaths.h"
 #include "../Source/PluginProcessor.h"
 #include "../Source/state/DexedParameterBackend.h"
 #include "../Source/state/SynthStateService.h"
@@ -106,8 +107,7 @@ public:
         beginTest("Processor snapshot matches the pinned legacy state");
         std::unique_ptr<DexedAudioProcessor> processor(
             static_cast<DexedAudioProcessor*>(createPluginFilter()));
-        const auto fixture = juce::File(
-            AGENTIC_DEXED_TEST_SOURCE_DIR "/Tests/fixtures/upstream-init-state.bin");
+        const auto fixture = agentic_dexed::test::dataRoot().getChildFile("Tests/fixtures/upstream-init-state.bin");
         juce::MemoryBlock state;
         expect(fixture.loadFileAsData(state));
         if (state.isEmpty())

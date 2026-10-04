@@ -1,3 +1,4 @@
+#include "TestDataPaths.h"
 #include "TestMessagePump.h"
 
 #include <JuceHeader.h>
@@ -170,7 +171,7 @@ struct EndToEndHarness
 {
     explicit EndToEndHarness(const char* fixtureName)
         : backend(registry), state(registry, backend),
-          model(juce::File(AGENTIC_DEXED_TEST_SOURCE_DIR "/Tests/fixtures/e2e/")
+          model(agentic_dexed::test::dataRoot().getChildFile("Tests/fixtures/e2e/")
                     .getChildFile(fixtureName)),
           dispatcher(registry, state, audition, save),
           session(model, dispatcher, credentials)

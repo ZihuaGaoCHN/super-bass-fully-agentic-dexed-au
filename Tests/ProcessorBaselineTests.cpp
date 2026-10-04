@@ -1,3 +1,4 @@
+#include "TestDataPaths.h"
 #include "../Source/PluginProcessor.h"
 
 #include <memory>
@@ -50,8 +51,7 @@ public:
 
         beginTest("Pinned initialization state preserves the program bytes");
 
-        const auto fixtureFile = juce::File(
-            AGENTIC_DEXED_TEST_SOURCE_DIR "/Tests/fixtures/upstream-init-state.bin");
+        const auto fixtureFile = agentic_dexed::test::dataRoot().getChildFile("Tests/fixtures/upstream-init-state.bin");
         juce::MemoryBlock fixture;
         expect(fixtureFile.loadFileAsData(fixture), "Could not load upstream state fixture");
         if (fixture.isEmpty())
