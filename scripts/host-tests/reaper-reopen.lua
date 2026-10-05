@@ -27,7 +27,7 @@ local fx_count = track and reaper.TrackFX_GetCount(track) or 0
 record("saved-plugin-reopened", fx_count == 1, fx_count)
 if track and fx_count == 1 then
   local _, fx_name = reaper.TrackFX_GetFXName(track, 0, "")
-  record("saved-plugin-identity", fx_name:find("Agentic Dexed", 1, true) ~= nil, fx_name)
+  record("saved-plugin-identity", fx_name:find("Super Bass Fully Agentic Dexed", 1, true) ~= nil, fx_name)
 
   local exact = #expected == 48
   local largest_delta = 0.0

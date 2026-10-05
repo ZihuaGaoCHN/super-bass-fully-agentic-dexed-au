@@ -13,7 +13,7 @@ endfunction()
 
 include("${CMAKE_CURRENT_LIST_DIR}/../../cmake/AgenticDexedProduct.cmake")
 
-assert_equal(AGENTIC_DEXED_PRODUCT_NAME "Agentic Dexed")
+assert_equal(AGENTIC_DEXED_PRODUCT_NAME "Super Bass Fully Agentic Dexed")
 assert_equal(AGENTIC_DEXED_TARGET_NAME "AgenticDexed")
 assert_equal(AGENTIC_DEXED_BUNDLE_ID "com.agenticdexed.AgenticDexed")
 assert_equal(AGENTIC_DEXED_PLUGIN_CODE "AgDx")
@@ -21,4 +21,4 @@ assert_equal(AGENTIC_DEXED_MANUFACTURER_CODE "Agnt")
 assert_equal(AGENTIC_DEXED_FORMATS "Standalone;VST3")
 assert_equal(AGENTIC_DEXED_COPY_PLUGIN_AFTER_BUILD "OFF")
 
-message(STATUS "Agentic Dexed product identity verified")
+message(STATUS "Super Bass Fully Agentic Dexed product identity verified")

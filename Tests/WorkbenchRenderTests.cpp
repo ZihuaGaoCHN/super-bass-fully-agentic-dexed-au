@@ -166,9 +166,19 @@ public:
         std::vector<Evidence> evidence;
 
         beginTest("header controls remain visible and separated across the compact transition");
+        expectEquals(processor.getName(), juce::String("Super Bass Fully Agentic Dexed"));
         for (const auto width : { 960, 1099, 1100, 1199, 1200, 1280 })
         {
             editor.setBounds(0, 0, width, 760);
+            // The full product name must coexist with navigation at minimum width.
+            auto& brandHeader = editor.workbenchHeader();
+            for (int index = 0; index < brandHeader.getNumChildComponents(); ++index)
+            {
+                const auto bounds = brandHeader.getChildComponent(index)->getBounds();
+                expect(!bounds.isEmpty() && brandHeader.getLocalBounds().contains(bounds));
+                for (int other = index + 1; other < brandHeader.getNumChildComponents(); ++other)
+                    expect(!bounds.intersects(brandHeader.getChildComponent(other)->getBounds()));
+            }
             auto& header = editor.patchHeader();
             for (int index = 0; index < header.getNumChildComponents(); ++index)
             {
@@ -192,6 +202,15 @@ public:
             expect(containsColour(first, WorkbenchTheme::paper));
             expect(containsColour(first, WorkbenchTheme::ink));
             expect(writePng(first, directory.getChildFile(name + ".png")));
+            if (name.endsWith("_reference"))
+            {
+                // Native component raster at 2x density, preserving the reference layout.
+                // Use this for publication rather than enlarging the window's layout.
+                const auto highResolution = editor.createComponentSnapshot(
+                    editor.getLocalBounds(), true, 2.0f);
+                expect(writePng(highResolution, directory.getChildFile(
+                    name.replace("_reference", "_press") + ".png")));
+            }
             evidence.push_back({ std::move(name), first });
         };
 

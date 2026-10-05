@@ -44,16 +44,16 @@ for tool in codesign ditto pkgbuild xcrun; do
 done
 
 entitlements="${repo_root}/packaging/macos/entitlements.plist"
-vst3="${stage}/VST3/Agentic Dexed.vst3"
+vst3="${stage}/VST3/Super Bass Fully Agentic Dexed.vst3"
 codesign --force --timestamp --options runtime --entitlements "${entitlements}" \
-    --sign "${MACOS_APPLICATION_IDENTITY}" "${vst3}/Contents/MacOS/Agentic Dexed"
+    --sign "${MACOS_APPLICATION_IDENTITY}" "${vst3}/Contents/MacOS/Super Bass Fully Agentic Dexed"
 codesign --force --timestamp --options runtime --entitlements "${entitlements}" \
     --sign "${MACOS_APPLICATION_IDENTITY}" "${vst3}"
 
-app="${stage}/Standalone/Agentic Dexed.app"
+app="${stage}/Standalone/Super Bass Fully Agentic Dexed.app"
 if [[ -d "${app}" ]]; then
     codesign --force --timestamp --options runtime --entitlements "${entitlements}" \
-        --sign "${MACOS_APPLICATION_IDENTITY}" "${app}/Contents/MacOS/Agentic Dexed"
+        --sign "${MACOS_APPLICATION_IDENTITY}" "${app}/Contents/MacOS/Super Bass Fully Agentic Dexed"
     codesign --force --timestamp --options runtime --entitlements "${entitlements}" \
         --sign "${MACOS_APPLICATION_IDENTITY}" "${app}"
 fi
@@ -72,10 +72,10 @@ pkgroot="${output_root}/.signed-pkgroot"
 case "${pkgroot}" in "${output_root}"/*) ;; *) echo "Unsafe package root" >&2; exit 2 ;; esac
 rm -rf "${pkgroot}"
 mkdir -p "${pkgroot}/Library/Audio/Plug-Ins/VST3"
-ditto "${vst3}" "${pkgroot}/Library/Audio/Plug-Ins/VST3/Agentic Dexed.vst3"
+ditto "${vst3}" "${pkgroot}/Library/Audio/Plug-Ins/VST3/Super Bass Fully Agentic Dexed.vst3"
 if [[ -d "${app}" ]]; then
     mkdir -p "${pkgroot}/Applications"
-    ditto "${app}" "${pkgroot}/Applications/Agentic Dexed.app"
+    ditto "${app}" "${pkgroot}/Applications/Super Bass Fully Agentic Dexed.app"
 fi
 package="${output_root}/${stage_name}.pkg"
 rm -f "${package}"

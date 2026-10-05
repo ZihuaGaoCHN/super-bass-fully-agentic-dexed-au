@@ -54,4 +54,4 @@ if(NOT sanitized MATCHES "<ci-workspace>/build/plugin.vst3"
     message(FATAL_ERROR "Log sanitizer removed useful validation content")
 endif()
 
-message(STATUS "Agentic Dexed release workflow verified")
+message(STATUS "Super Bass Fully Agentic Dexed release workflow verified")

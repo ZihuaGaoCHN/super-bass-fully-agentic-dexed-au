@@ -40,4 +40,4 @@ assert_workflow_contains("          path: agentic-dexed-macos-x86_64.tar.gz\n")
 assert_workflow_contains("          tar -czf agentic-dexed-macos-arm64.tar.gz\n")
 assert_workflow_contains("          path: agentic-dexed-macos-arm64.tar.gz\n")
 
-message(STATUS "Agentic Dexed build workflow verified")
+message(STATUS "Super Bass Fully Agentic Dexed build workflow verified")

@@ -11,7 +11,7 @@ juce_add_plugin("${BaseTargetName}"
         VERSION "1.0.1"
         ICON_BIG "../assets/ui/dexedIcon.png"
         ICON_SMALL "../assets/ui/dexedIcon.png"
-        COMPANY_NAME "Agentic Dexed"
+        COMPANY_NAME "Super Bass Fully Agentic Dexed"
         IS_SYNTH TRUE
         NEEDS_MIDI_INPUT TRUE
         NEEDS_MIDI_OUTPUT TRUE
@@ -21,13 +21,14 @@ juce_add_plugin("${BaseTargetName}"
         PLUGIN_CODE ${AGENTIC_DEXED_PLUGIN_CODE}
         FORMATS ${AGENTIC_DEXED_FORMATS}
         PRODUCT_NAME "${AGENTIC_DEXED_PRODUCT_NAME}"
-        DESCRIPTION "Agentic Dexed FM Synth"
+        DESCRIPTION "Super Bass Fully Agentic Dexed FM Synth"
         BUNDLE_ID "${AGENTIC_DEXED_BUNDLE_ID}"
         COPY_PLUGIN_AFTER_BUILD ${AGENTIC_DEXED_COPY_PLUGIN_AFTER_BUILD}
         VST3_AUTO_MANIFEST ${agentic_dexed_vst3_auto_manifest}
 )
 
 juce_generate_juce_header(${BaseTargetName})
+agentic_refresh_windows_resource_identity(${BaseTargetName})
 
 include_directories(../libs/MTS-ESP/Client)
 

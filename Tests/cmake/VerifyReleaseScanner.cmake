@@ -38,4 +38,4 @@ if(NOT "${scan_output}${scan_error}" MATCHES "sensitive content")
     message(FATAL_ERROR "Release scanner failed without identifying sensitive content: ${scan_output}${scan_error}")
 endif()
 
-message(STATUS "Agentic Dexed release scanner rejection verified")
+message(STATUS "Super Bass Fully Agentic Dexed release scanner rejection verified")

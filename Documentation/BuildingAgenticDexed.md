@@ -1,6 +1,6 @@
-# Building Agentic Dexed
+# Building Super Bass Fully Agentic Dexed
 
-Agentic Dexed builds as a VST3 instrument and a standalone application on Windows and macOS. The project keeps build-tree artifacts separate from any system plug-in directory unless copying is explicitly enabled.
+Super Bass Fully Agentic Dexed builds as a VST3 instrument and a standalone application on Windows and macOS. The project keeps build-tree artifacts separate from any system plug-in directory unless copying is explicitly enabled.
 
 ## Supported build hosts
 
@@ -29,8 +29,8 @@ ctest --test-dir build/windows -C Release --output-on-failure
 
 The Release artifacts are written to:
 
-- `build/windows/Source/AgenticDexed_artefacts/Release/VST3/Agentic Dexed.vst3`
-- `build/windows/Source/AgenticDexed_artefacts/Release/Standalone/Agentic Dexed.exe`
+- `build/windows/Source/AgenticDexed_artefacts/Release/VST3/Super Bass Fully Agentic Dexed.vst3`
+- `build/windows/Source/AgenticDexed_artefacts/Release/Standalone/Super Bass Fully Agentic Dexed.exe`
 
 ## macOS x86_64
 
@@ -56,7 +56,7 @@ cmake --build build/macos-arm64 --config Release --parallel \
 ctest --test-dir build/macos-arm64 -C Release --output-on-failure
 ```
 
-Each macOS build writes `Agentic Dexed.vst3` and `Agentic Dexed.app` below `build/<architecture>/Source/AgenticDexed_artefacts/Release`.
+Each macOS build writes `Super Bass Fully Agentic Dexed.vst3` and `Super Bass Fully Agentic Dexed.app` below `build/<architecture>/Source/AgenticDexed_artefacts/Release`.
 
 ## Optional plug-in installation
 

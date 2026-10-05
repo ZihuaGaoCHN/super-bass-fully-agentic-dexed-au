@@ -1,6 +1,6 @@
 # Release signing and notarization
 
-Public Agentic Dexed packages are produced only by the tag-triggered
+Public Super Bass Fully Agentic Dexed packages are produced only by the tag-triggered
 `.github/workflows/release.yml` workflow. Pull-request builds never receive a
 signing environment. Checksums are generated from the final signed and scanned
 bytes.

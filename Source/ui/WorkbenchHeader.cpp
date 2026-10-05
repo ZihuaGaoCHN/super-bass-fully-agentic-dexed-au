@@ -45,7 +45,7 @@ void WorkbenchHeader::paint(juce::Graphics& graphics)
 void WorkbenchHeader::resized()
 {
     auto area = getLocalBounds().reduced(10, 6);
-    brand_.setBounds(area.removeFromLeft(80));
+    brand_.setBounds(area.removeFromLeft(370));
     synth_.setBounds(area.removeFromLeft(150));
     area.removeFromLeft(4);
     system_.setBounds(area.removeFromLeft(92));

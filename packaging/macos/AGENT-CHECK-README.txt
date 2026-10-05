@@ -1,9 +1,9 @@
-Agentic Dexed — ARM native agent reliability candidate, 2026-10-03 r2
+Super Bass Fully Agentic Dexed — ARM native agent reliability candidate, 2026-10-03 r2
 
 本包包含 ARM 原生独立应用、VST3，以及 ARM 原生 Agent 检查程序。
 不包含源码，不需要远程登录，也不需要 Rosetta。
 
-1. 退出旧版 Agentic Dexed 和正在使用它的 DAW，再打开本包的 Agentic Dexed.app。
+1. 退出旧版 Super Bass Fully Agentic Dexed 和正在使用它的 DAW，再打开本包的 Super Bass Fully Agentic Dexed.app。
 2. 在 Agent 设置中选择 Chat Completions，地址 https://api.deepseek.com，模型 deepseek-flash。
    使用自己的 API Key。密钥不包含在本包中。
 3. 双击 Run-Agent-Check.command 执行真实生成回归。

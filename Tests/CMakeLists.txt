@@ -1,6 +1,7 @@
 juce_add_console_app(AgenticDexedTests
-    PRODUCT_NAME "Agentic Dexed Tests"
+    PRODUCT_NAME "Super Bass Fully Agentic Dexed Tests"
 )
+agentic_refresh_windows_resource_identity(AgenticDexedTests)
 
 target_sources(AgenticDexedTests PRIVATE
     TestMain.cpp
@@ -72,6 +73,8 @@ set_target_properties(AgenticDexedTests PROPERTIES
 )
 
 add_test(NAME agentic-dexed-unit COMMAND AgenticDexedTests)
+add_test(NAME agentic-dexed-product-identity
+    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/VerifyProductIdentity.cmake)
 set_tests_properties(agentic-dexed-unit PROPERTIES
     WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
 )

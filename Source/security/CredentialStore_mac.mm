@@ -37,6 +37,7 @@ CFMutableDictionaryRef makeQuery(std::string_view providerId)
         &kCFTypeDictionaryValueCallBacks);
     if (query == nullptr)
         return nullptr;
+    // Preserve the persisted service ID so an upgrade can read existing keys.
     ScopedCF service(makeString("Agentic Dexed"));
     ScopedCF account(makeString(providerId));
     if (service.get() == nullptr || account.get() == nullptr)
@@ -67,10 +68,11 @@ public:
             return { CredentialStatus::platformError,
                      "macOS Keychain could not prepare the credential", false };
 
-        const void* keys[] = { kSecValueData };
-        const void* values[] = { data.get() };
+        ScopedCF label(makeString("Super Bass Fully Agentic Dexed"));
+        const void* keys[] = { kSecValueData, kSecAttrLabel };
+        const void* values[] = { data.get(), label.get() };
         ScopedCF update(CFDictionaryCreate(
-            kCFAllocatorDefault, keys, values, 1,
+            kCFAllocatorDefault, keys, values, 2,
             &kCFTypeDictionaryKeyCallBacks,
             &kCFTypeDictionaryValueCallBacks));
         auto status = SecItemUpdate(
@@ -84,6 +86,7 @@ public:
                 return { CredentialStatus::platformError,
                          "macOS Keychain could not prepare the credential", false };
             CFDictionarySetValue(add, kSecValueData, data.get());
+            CFDictionarySetValue(add, kSecAttrLabel, label.get());
             CFDictionarySetValue(add, kSecAttrAccessible, kSecAttrAccessibleAfterFirstUnlock);
             status = SecItemAdd(add, nullptr);
             CFRelease(add);

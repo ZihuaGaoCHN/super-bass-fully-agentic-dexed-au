@@ -14,6 +14,7 @@ namespace
 {
 std::wstring targetName(std::string_view providerId)
 {
+    // Persisted lookup ID: keep existing saved credentials available on upgrade.
     std::wstring result = L"AgenticDexed/Provider/";
     result.append(providerId.begin(), providerId.end());
     return result;
@@ -37,7 +38,7 @@ public:
         credential.CredentialBlob = reinterpret_cast<LPBYTE>(
             const_cast<char*>(secret.data()));
         credential.Persist = CRED_PERSIST_LOCAL_MACHINE;
-        credential.UserName = const_cast<LPWSTR>(L"Agentic Dexed");
+        credential.UserName = const_cast<LPWSTR>(L"Super Bass Fully Agentic Dexed");
         if (CredWriteW(&credential, 0) == FALSE)
             return { CredentialStatus::platformError,
                      "Windows Credential Manager could not store the credential", false };
@@ -86,4 +87,3 @@ std::unique_ptr<ICredentialStore> createPlatformCredentialStore()
 }
 
 #endif
-

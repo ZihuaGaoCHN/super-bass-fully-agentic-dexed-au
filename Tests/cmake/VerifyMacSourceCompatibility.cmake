@@ -49,4 +49,4 @@ if(initialise_ns_application_position LESS 0 OR scoped_juce_position LESS 0
         "The macOS test runner must initialise NSApplication before JUCE")
 endif()
 
-message(STATUS "Agentic Dexed macOS source compatibility verified")
+message(STATUS "Super Bass Fully Agentic Dexed macOS source compatibility verified")

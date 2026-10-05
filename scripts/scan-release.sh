@@ -40,9 +40,9 @@ scan_tree() {
     local root="$1"
     local skip_staging="${2:-0}"
     while IFS= read -r -d '' file; do
-        if [[ "${skip_staging}" == "1" && "/${file#${root}/}" == *"/Agentic-Dexed-"*"-source/"* ]]; then continue; fi
-        if [[ "${skip_staging}" == "1" && "/${file#${root}/}" == *"/Agentic-Dexed-"*"-windows-x64/"* ]]; then continue; fi
-        if [[ "${skip_staging}" == "1" && "/${file#${root}/}" == *"/Agentic-Dexed-"*"-macos-universal/"* ]]; then continue; fi
+        if [[ "${skip_staging}" == "1" && "/${file#${root}/}" == *"/Super-Bass-Fully-Agentic-Dexed-"*"-source/"* ]]; then continue; fi
+        if [[ "${skip_staging}" == "1" && "/${file#${root}/}" == *"/Super-Bass-Fully-Agentic-Dexed-"*"-windows-x64/"* ]]; then continue; fi
+        if [[ "${skip_staging}" == "1" && "/${file#${root}/}" == *"/Super-Bass-Fully-Agentic-Dexed-"*"-macos-universal/"* ]]; then continue; fi
         files_scanned=$((files_scanned + 1))
         relative="${file#${root}/}"
         case "${file}" in
@@ -50,11 +50,11 @@ scan_tree() {
         esac
         case "${file}" in
             *.exe|*.dll|*.dylib|*.vst3)
-                if [[ "/${relative}" == *"/Agentic-Dexed-"*"-source/"* ]]; then
-                    [[ "/${relative}" == *"/Agentic-Dexed-"*"-source/libs/MTS-ESP/libMTS/"* ]] || echo "unexpected executable: ${relative}" >> "${issues_file}"
+                if [[ "/${relative}" == *"/Super-Bass-Fully-Agentic-Dexed-"*"-source/"* ]]; then
+                    [[ "/${relative}" == *"/Super-Bass-Fully-Agentic-Dexed-"*"-source/libs/MTS-ESP/libMTS/"* ]] || echo "unexpected executable: ${relative}" >> "${issues_file}"
                 else
                     name="$(basename "${file}")"
-                    [[ "${name}" == "Agentic Dexed.exe" || "${name}" == "Agentic Dexed.vst3" || "${name}" =~ ^Agentic-Dexed-[0-9.]+-windows-x64-setup\.exe$ ]] || echo "unexpected executable: ${relative}" >> "${issues_file}"
+                    [[ "${name}" == "Super Bass Fully Agentic Dexed.exe" || "${name}" == "Super Bass Fully Agentic Dexed.vst3" || "${name}" =~ ^Super-Bass-Fully-Agentic-Dexed-[0-9.]+-windows-x64-setup\.exe$ ]] || echo "unexpected executable: ${relative}" >> "${issues_file}"
                 fi
                 ;;
         esac
@@ -85,7 +85,7 @@ scan_tree "${release_root}" 1
 archive_index=0
 while IFS= read -r -d '' archive; do
     relative_archive="${archive#${release_root}/}"
-    if [[ "/${relative_archive}" == *"/Agentic-Dexed-"*"-source/"* || "/${relative_archive}" == *"/Agentic-Dexed-"*"-windows-x64/"* || "/${relative_archive}" == *"/Agentic-Dexed-"*"-macos-universal/"* ]]; then
+    if [[ "/${relative_archive}" == *"/Super-Bass-Fully-Agentic-Dexed-"*"-source/"* || "/${relative_archive}" == *"/Super-Bass-Fully-Agentic-Dexed-"*"-windows-x64/"* || "/${relative_archive}" == *"/Super-Bass-Fully-Agentic-Dexed-"*"-macos-universal/"* ]]; then
         continue
     fi
     archive_index=$((archive_index + 1))
@@ -109,7 +109,7 @@ packages_file="${temporary_root}/packages.txt"
 : > "${packages_file}"
 while IFS= read -r -d '' package; do
     relative_package="${package#${release_root}/}"
-    if [[ "/${relative_package}" == *"/Agentic-Dexed-"*"-source/"* || "/${relative_package}" == *"/Agentic-Dexed-"*"-windows-x64/"* || "/${relative_package}" == *"/Agentic-Dexed-"*"-macos-universal/"* ]]; then
+    if [[ "/${relative_package}" == *"/Super-Bass-Fully-Agentic-Dexed-"*"-source/"* || "/${relative_package}" == *"/Super-Bass-Fully-Agentic-Dexed-"*"-windows-x64/"* || "/${relative_package}" == *"/Super-Bass-Fully-Agentic-Dexed-"*"-macos-universal/"* ]]; then
         continue
     fi
     printf '%s\n' "${package}" >> "${packages_file}"
@@ -127,7 +127,7 @@ source_archive="$(find "${release_root}" -type f -name '*-source.zip' -print -qu
 source_archive="${source_archive##*/}"
 manifest="${release_root}/release-manifest.json"
 {
-    printf '{\n  "product": "Agentic Dexed",\n  "version": "%s",\n' "${version}"
+    printf '{\n  "product": "Super Bass Fully Agentic Dexed",\n  "version": "%s",\n' "${version}"
     printf '  "git_commit": "%s",\n  "submodules": [\n' "${root_commit}"
     index=0
     while IFS= read -r line; do

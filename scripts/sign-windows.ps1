@@ -70,7 +70,7 @@ if ($null -eq $iscc) { throw "Inno Setup compiler is unavailable after binary si
     (Join-Path $repositoryRoot "packaging\windows\AgenticDexed.iss")
 if ($LASTEXITCODE -ne 0) { throw "Inno Setup failed after binary signing" }
 
-$installer = Join-Path $outputRoot "Agentic-Dexed-$Version-windows-x64-setup.exe"
+$installer = Join-Path $outputRoot "Super-Bass-Fully-Agentic-Dexed-$Version-windows-x64-setup.exe"
 if (-not (Test-Path -LiteralPath $installer -PathType Leaf)) {
     throw "Signed-payload installer was not created: $installer"
 }

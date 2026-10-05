@@ -8,7 +8,7 @@ endforeach()
 
 string(REPLACE "," "\", \"" ARCHITECTURE_JSON "${ARCHITECTURES}")
 file(WRITE "${OUTPUT_FILE}" "{\n")
-file(APPEND "${OUTPUT_FILE}" "  \"product\": \"Agentic Dexed\",\n")
+file(APPEND "${OUTPUT_FILE}" "  \"product\": \"Super Bass Fully Agentic Dexed\",\n")
 file(APPEND "${OUTPUT_FILE}" "  \"version\": \"${VERSION}\",\n")
 file(APPEND "${OUTPUT_FILE}" "  \"platform\": \"${PLATFORM}\",\n")
 file(APPEND "${OUTPUT_FILE}" "  \"architectures\": [\"${ARCHITECTURE_JSON}\"],\n")

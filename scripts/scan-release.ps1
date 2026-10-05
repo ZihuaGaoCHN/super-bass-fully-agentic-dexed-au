@@ -26,13 +26,13 @@ $contentPatterns = @($canary, $authorizationPattern, $privateKeyPattern, $worksp
 function Add-Issue([string] $Message) { $script:issues.Add($Message) }
 
 function Test-IsStagingPath([string] $Path) {
-    return $Path -match '[\\/]Agentic-Dexed-[^\\/]+-(?:source|windows-x64|macos-universal)[\\/]'
+    return $Path -match '[\\/]Super-Bass-Fully-Agentic-Dexed-[^\\/]+-(?:source|windows-x64|macos-universal)[\\/]'
 }
 
 function Test-Tree([string] $Root, [bool] $SkipStaging = $false) {
     $rootPath = [IO.Path]::GetFullPath($Root)
     foreach ($file in Get-ChildItem -LiteralPath $rootPath -Recurse -File -Force) {
-        if ($SkipStaging -and $file.FullName -match '[\\/]Agentic-Dexed-[^\\/]+-(?:source|windows-x64|macos-universal)[\\/]') {
+        if ($SkipStaging -and $file.FullName -match '[\\/]Super-Bass-Fully-Agentic-Dexed-[^\\/]+-(?:source|windows-x64|macos-universal)[\\/]') {
             continue
         }
         $script:filesScanned++
@@ -41,13 +41,13 @@ function Test-Tree([string] $Root, [bool] $SkipStaging = $false) {
             Add-Issue "signing credential file: $relative"
         }
         if ($file.Extension -match '^\.(exe|dll|dylib|vst3)$') {
-            $sourceFile = $relative -match '(^|/)Agentic-Dexed-[^/]+-source/'
+            $sourceFile = $relative -match '(^|/)Super-Bass-Fully-Agentic-Dexed-[^/]+-source/'
             $allowedBinary = if ($sourceFile) {
-                $relative -match '(^|/)Agentic-Dexed-[^/]+-source/libs/MTS-ESP/libMTS/'
+                $relative -match '(^|/)Super-Bass-Fully-Agentic-Dexed-[^/]+-source/libs/MTS-ESP/libMTS/'
             } else {
-                $file.Name -eq "Agentic Dexed.exe" -or
-                $file.Name -eq "Agentic Dexed.vst3" -or
-                $file.Name -match '^Agentic-Dexed-[0-9.]+-windows-x64-setup\.exe$'
+                $file.Name -eq "Super Bass Fully Agentic Dexed.exe" -or
+                $file.Name -eq "Super Bass Fully Agentic Dexed.vst3" -or
+                $file.Name -match '^Super-Bass-Fully-Agentic-Dexed-[0-9.]+-windows-x64-setup\.exe$'
             }
             if (-not $allowedBinary) { Add-Issue "unexpected executable: $relative" }
         }
@@ -116,7 +116,7 @@ try {
         ForEach-Object { [IO.Path]::GetRelativePath($releaseRoot, $_.FullName).Replace('\', '/') }
     $sourceArchive = $packages | Where-Object Name -match '-source\.zip$' | Select-Object -First 1
     $releaseManifest = [ordered]@{
-        product = "Agentic Dexed"
+        product = "Super Bass Fully Agentic Dexed"
         version = $Version
         git_commit = (& git -C $repositoryRoot rev-parse HEAD).Trim()
         submodules = $submodules

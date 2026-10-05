@@ -9,8 +9,8 @@ DexedAudioProcessorEditor::DexedAudioProcessorEditor(DexedAudioProcessor* proces
     : juce::AudioProcessorEditor(processor), processor_(*processor),
       mainEditor_(std::make_unique<agentic_dexed::ui::MainEditor>(*processor))
 {
-    setName("Agentic Dexed");
-    setTitle("Agentic Dexed");
+    setName("Super Bass Fully Agentic Dexed");
+    setTitle("Super Bass Fully Agentic Dexed");
     setResizable(true, false);
     setResizeLimits(agentic_dexed::ui::WorkbenchTheme::minimumWidth,
                     agentic_dexed::ui::WorkbenchTheme::minimumHeight,

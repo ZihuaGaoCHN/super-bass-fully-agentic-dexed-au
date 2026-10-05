@@ -31,38 +31,38 @@ done
 
 x86_artifacts="${x86_build}/Source/AgenticDexed_artefacts/Release"
 arm_artifacts="${arm_build}/Source/AgenticDexed_artefacts/Release"
-x86_vst3="${x86_artifacts}/VST3/Agentic Dexed.vst3"
-arm_vst3="${arm_artifacts}/VST3/Agentic Dexed.vst3"
+x86_vst3="${x86_artifacts}/VST3/Super Bass Fully Agentic Dexed.vst3"
+arm_vst3="${arm_artifacts}/VST3/Super Bass Fully Agentic Dexed.vst3"
 if [[ ! -d "${x86_vst3}" || ! -d "${arm_vst3}" ]]; then
     echo "Both architecture-specific VST3 bundles are required" >&2
     exit 2
 fi
 
 output_root="$(mkdir -p "${output_root}" && cd "${output_root}" && pwd)"
-stage_name="Agentic-Dexed-${version}-macos-universal"
+stage_name="Super-Bass-Fully-Agentic-Dexed-${version}-macos-universal"
 stage="${output_root}/${stage_name}"
 case "${stage}" in "${output_root}"/*) ;; *) echo "Unsafe stage path" >&2; exit 2 ;; esac
 rm -rf "${stage}"
 mkdir -p "${stage}/VST3"
-ditto "${arm_vst3}" "${stage}/VST3/Agentic Dexed.vst3"
+ditto "${arm_vst3}" "${stage}/VST3/Super Bass Fully Agentic Dexed.vst3"
 lipo -create \
-    "${x86_vst3}/Contents/MacOS/Agentic Dexed" \
-    "${arm_vst3}/Contents/MacOS/Agentic Dexed" \
-    -output "${stage}/VST3/Agentic Dexed.vst3/Contents/MacOS/Agentic Dexed"
+    "${x86_vst3}/Contents/MacOS/Super Bass Fully Agentic Dexed" \
+    "${arm_vst3}/Contents/MacOS/Super Bass Fully Agentic Dexed" \
+    -output "${stage}/VST3/Super Bass Fully Agentic Dexed.vst3/Contents/MacOS/Super Bass Fully Agentic Dexed"
 
 if [[ ${include_standalone} -eq 1 ]]; then
-    x86_app="${x86_artifacts}/Standalone/Agentic Dexed.app"
-    arm_app="${arm_artifacts}/Standalone/Agentic Dexed.app"
+    x86_app="${x86_artifacts}/Standalone/Super Bass Fully Agentic Dexed.app"
+    arm_app="${arm_artifacts}/Standalone/Super Bass Fully Agentic Dexed.app"
     if [[ ! -d "${x86_app}" || ! -d "${arm_app}" ]]; then
         echo "Standalone bundles are required unless --skip-standalone is used" >&2
         exit 2
     fi
     mkdir -p "${stage}/Standalone"
-    ditto "${arm_app}" "${stage}/Standalone/Agentic Dexed.app"
+    ditto "${arm_app}" "${stage}/Standalone/Super Bass Fully Agentic Dexed.app"
     lipo -create \
-        "${x86_app}/Contents/MacOS/Agentic Dexed" \
-        "${arm_app}/Contents/MacOS/Agentic Dexed" \
-        -output "${stage}/Standalone/Agentic Dexed.app/Contents/MacOS/Agentic Dexed"
+        "${x86_app}/Contents/MacOS/Super Bass Fully Agentic Dexed" \
+        "${arm_app}/Contents/MacOS/Super Bass Fully Agentic Dexed" \
+        -output "${stage}/Standalone/Super Bass Fully Agentic Dexed.app/Contents/MacOS/Super Bass Fully Agentic Dexed"
 fi
 
 cp "${repo_root}/LICENSE" "${stage}/LICENSE"
@@ -78,9 +78,9 @@ cmake \
     -P "${repo_root}/packaging/PackageManifest.cmake"
 
 {
-    lipo -info "${stage}/VST3/Agentic Dexed.vst3/Contents/MacOS/Agentic Dexed"
-    if [[ -d "${stage}/Standalone/Agentic Dexed.app" ]]; then
-        lipo -info "${stage}/Standalone/Agentic Dexed.app/Contents/MacOS/Agentic Dexed"
+    lipo -info "${stage}/VST3/Super Bass Fully Agentic Dexed.vst3/Contents/MacOS/Super Bass Fully Agentic Dexed"
+    if [[ -d "${stage}/Standalone/Super Bass Fully Agentic Dexed.app" ]]; then
+        lipo -info "${stage}/Standalone/Super Bass Fully Agentic Dexed.app/Contents/MacOS/Super Bass Fully Agentic Dexed"
     fi
 } | tee "${stage}/architecture.txt"
 grep -q x86_64 "${stage}/architecture.txt"
@@ -93,12 +93,12 @@ ditto -c -k --keepParent "${stage}" "${portable}"
 pkgroot="${output_root}/.pkgroot"
 rm -rf "${pkgroot}"
 mkdir -p "${pkgroot}/Library/Audio/Plug-Ins/VST3"
-ditto "${stage}/VST3/Agentic Dexed.vst3" \
-      "${pkgroot}/Library/Audio/Plug-Ins/VST3/Agentic Dexed.vst3"
-if [[ -d "${stage}/Standalone/Agentic Dexed.app" ]]; then
+ditto "${stage}/VST3/Super Bass Fully Agentic Dexed.vst3" \
+      "${pkgroot}/Library/Audio/Plug-Ins/VST3/Super Bass Fully Agentic Dexed.vst3"
+if [[ -d "${stage}/Standalone/Super Bass Fully Agentic Dexed.app" ]]; then
     mkdir -p "${pkgroot}/Applications"
-    ditto "${stage}/Standalone/Agentic Dexed.app" \
-          "${pkgroot}/Applications/Agentic Dexed.app"
+    ditto "${stage}/Standalone/Super Bass Fully Agentic Dexed.app" \
+          "${pkgroot}/Applications/Super Bass Fully Agentic Dexed.app"
 fi
 pkgbuild --root "${pkgroot}" \
     --identifier com.agenticdexed.AgenticDexed.pkg \

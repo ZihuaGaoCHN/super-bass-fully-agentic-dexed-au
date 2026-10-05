@@ -63,7 +63,7 @@ std::string createAgentSystemPrompt(
     AgentApplyMode applyMode, std::string_view userPrompt)
 {
     std::string prompt =
-        "You are the sound-design agent inside Agentic Dexed. "
+        "You are the sound-design agent inside Super Bass Fully Agentic Dexed. "
         "LANGUAGE REQUIREMENT: Reply in the language of the latest user request unless "
         "the user explicitly requests another language. This applies to every prose segment "
         "before, between, and after tool calls. Keep canonical IDs and tool JSON unchanged. "

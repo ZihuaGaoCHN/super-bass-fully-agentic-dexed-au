@@ -24,7 +24,7 @@ endforeach()
 
 file(READ "${MANIFEST}" MANIFEST_JSON)
 foreach(EXPECTED IN ITEMS
-        "\"product\": \"Agentic Dexed\""
+        "\"product\": \"Super Bass Fully Agentic Dexed\""
         "\"version\": \"1.0.1\""
         "\"bundle_id\": \"com.agenticdexed.AgenticDexed\""
         "\"plugin_code\": \"AgDx\"")
@@ -36,17 +36,17 @@ endforeach()
 file(GLOB_RECURSE ALL_ENTRIES LIST_DIRECTORIES true "${STAGE_ROOT}/*")
 set(VST3_DIRECTORIES "")
 foreach(ENTRY IN LISTS ALL_ENTRIES)
-    if(IS_DIRECTORY "${ENTRY}" AND ENTRY MATCHES "Agentic Dexed\\.vst3$")
+    if(IS_DIRECTORY "${ENTRY}" AND ENTRY MATCHES "Super Bass Fully Agentic Dexed\\.vst3$")
         list(APPEND VST3_DIRECTORIES "${ENTRY}")
     endif()
 endforeach()
 list(REMOVE_DUPLICATES VST3_DIRECTORIES)
 list(LENGTH VST3_DIRECTORIES VST3_COUNT)
 if(NOT VST3_COUNT EQUAL 1)
-    message(FATAL_ERROR "Expected exactly one Agentic Dexed.vst3 bundle, found ${VST3_COUNT}")
+    message(FATAL_ERROR "Expected exactly one Super Bass Fully Agentic Dexed.vst3 bundle, found ${VST3_COUNT}")
 endif()
 
-if(NOT EXISTS "${STAGE_ROOT}/VST3/Agentic Dexed.vst3")
+if(NOT EXISTS "${STAGE_ROOT}/VST3/Super Bass Fully Agentic Dexed.vst3")
     message(FATAL_ERROR "VST3 bundle is not in the canonical package location")
 endif()
 
@@ -80,4 +80,4 @@ if(TEXT_TO_AUDIT MATCHES "com\\.digitalsuburban\\.[Dd]exed|PLUGIN_CODE[^\n]*Dexd
     message(FATAL_ERROR "Package contains a legacy Dexed identity")
 endif()
 
-message(STATUS "Verified Agentic Dexed package layout at ${STAGE_ROOT}")
+message(STATUS "Verified Super Bass Fully Agentic Dexed package layout at ${STAGE_ROOT}")

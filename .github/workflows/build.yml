@@ -1,4 +1,4 @@
-name: Build Agentic Dexed
+name: Build Super Bass Fully Agentic Dexed
 
 on:
   push:
@@ -42,7 +42,7 @@ jobs:
         shell: pwsh
         run: >-
           ./scripts/validate-plugin.ps1
-          -PluginPath "./build/Source/AgenticDexed_artefacts/Release/VST3/Agentic Dexed.vst3"
+          -PluginPath "./build/Source/AgenticDexed_artefacts/Release/VST3/Super Bass Fully Agentic Dexed.vst3"
           -Strictness 8
           -OutputDirectory ./build/validation
 
@@ -64,8 +64,8 @@ jobs:
           name: agentic-dexed-windows-x64
           if-no-files-found: error
           path: |
-            build/Source/AgenticDexed_artefacts/Release/VST3/Agentic Dexed.vst3/**
-            build/Source/AgenticDexed_artefacts/Release/Standalone/Agentic Dexed.exe
+            build/Source/AgenticDexed_artefacts/Release/VST3/Super Bass Fully Agentic Dexed.vst3/**
+            build/Source/AgenticDexed_artefacts/Release/Standalone/Super Bass Fully Agentic Dexed.exe
 
   macos-arm64:
     name: macOS arm64
@@ -100,7 +100,7 @@ jobs:
       - name: Validate VST3 at strictness 8
         run: >-
           bash ./scripts/validate-plugin.sh
-          --plugin-path "./build/Source/AgenticDexed_artefacts/Release/VST3/Agentic Dexed.vst3"
+          --plugin-path "./build/Source/AgenticDexed_artefacts/Release/VST3/Super Bass Fully Agentic Dexed.vst3"
           --strictness 8
           --output-dir ./build/validation
 

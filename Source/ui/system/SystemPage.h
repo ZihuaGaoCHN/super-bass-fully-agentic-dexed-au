@@ -75,7 +75,7 @@ private:
     WorkbenchLabel bilingualStatus_ { "BILINGUAL LABELS: ON" };
     WorkbenchLabel cjkStatus_ { "CJK FONT FALLBACK: ON" };
     WorkbenchLabel accessibilityStatus_ { "ACCESSIBILITY NAMES & KEYBOARD: ON" };
-    WorkbenchLabel aboutVersion_ { "AGENTIC DEXED 1.0.1" };
+    WorkbenchLabel aboutVersion_ { "Super Bass Fully Agentic Dexed 1.0.1" };
     WorkbenchLabel aboutLicense_ { "GPL-3.0 LICENSE" };
     WorkbenchLabel aboutUpstream_ { "UPSTREAM DEXED" };
     WorkbenchLabel aboutThirdParty_ { "THIRD-PARTY NOTICES" };

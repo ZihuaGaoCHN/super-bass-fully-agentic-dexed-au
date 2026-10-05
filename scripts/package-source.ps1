@@ -8,7 +8,7 @@ $ErrorActionPreference = "Stop"
 $repositoryRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot ".."))
 $outputRoot = [IO.Path]::GetFullPath($OutputDirectory)
 New-Item -ItemType Directory -Force -Path $outputRoot | Out-Null
-$stageName = "Agentic-Dexed-$Version-source"
+$stageName = "Super-Bass-Fully-Agentic-Dexed-$Version-source"
 $obsoleteStage = Join-Path $outputRoot $stageName
 $obsoletePrefix = $outputRoot.TrimEnd('\') + '\'
 if ($obsoleteStage.StartsWith($obsoletePrefix, [StringComparison]::OrdinalIgnoreCase) -and
@@ -55,7 +55,7 @@ foreach ($submodule in $submodules) {
 $rootCommit = (& git -C $repositoryRoot rev-parse HEAD).Trim()
 if ($LASTEXITCODE -ne 0) { throw "Could not determine source commit" }
 $manifest = [ordered]@{
-    product = "Agentic Dexed"
+    product = "Super Bass Fully Agentic Dexed"
     version = $Version
     root_commit = $rootCommit
     submodules = $submodules

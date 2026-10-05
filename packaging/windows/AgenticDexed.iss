@@ -1,5 +1,5 @@
-#define ProductName "Agentic Dexed"
-#define Publisher "Agentic Dexed Contributors"
+#define ProductName "Super Bass Fully Agentic Dexed"
+#define Publisher "Super Bass Fully Agentic Dexed Contributors"
 
 #ifndef Version
   #define Version "0.0.0"
@@ -19,16 +19,16 @@ AppVersion={#Version}
 AppVerName={#ProductName} {#Version}
 ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
-DefaultDirName={autopf}\Agentic Dexed
-DefaultGroupName=Agentic Dexed
+DefaultDirName={autopf}\Super Bass Fully Agentic Dexed
+DefaultGroupName=Super Bass Fully Agentic Dexed
 LicenseFile={#SourceRoot}\LICENSE
 OutputDir={#OutputDirectory}
-OutputBaseFilename=Agentic-Dexed-{#Version}-windows-x64-setup
+OutputBaseFilename=Super-Bass-Fully-Agentic-Dexed-{#Version}-windows-x64-setup
 Compression=lzma2
 SolidCompression=yes
 PrivilegesRequired=admin
 SetupLogging=yes
-UninstallDisplayName=Agentic Dexed {#Version}
+UninstallDisplayName=Super Bass Fully Agentic Dexed {#Version}
 UninstallFilesDir={app}\Uninstall
 WizardStyle=modern
 
@@ -43,16 +43,16 @@ Name: "standalone"; Description: "Standalone diagnostic application"; Types: ful
 Name: "documentation"; Description: "License and documentation"; Types: full plugin custom; Flags: fixed
 
 [Files]
-Source: "{#SourceRoot}\VST3\Agentic Dexed.vst3\*"; DestDir: "{commoncf}\VST3\Agentic Dexed.vst3"; Components: vst3; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "{#SourceRoot}\Standalone\Agentic Dexed.exe"; DestDir: "{app}"; Components: standalone; Flags: ignoreversion skipifsourcedoesntexist
+Source: "{#SourceRoot}\VST3\Super Bass Fully Agentic Dexed.vst3\*"; DestDir: "{commoncf}\VST3\Super Bass Fully Agentic Dexed.vst3"; Components: vst3; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#SourceRoot}\Standalone\Super Bass Fully Agentic Dexed.exe"; DestDir: "{app}"; Components: standalone; Flags: ignoreversion skipifsourcedoesntexist
 Source: "{#SourceRoot}\LICENSE"; DestDir: "{app}\Documentation"; Components: documentation; Flags: ignoreversion
 Source: "{#SourceRoot}\THIRD_PARTY_NOTICES.md"; DestDir: "{app}\Documentation"; Components: documentation; Flags: ignoreversion
 Source: "{#SourceRoot}\README.md"; DestDir: "{app}\Documentation"; Components: documentation; Flags: ignoreversion
 Source: "{#SourceRoot}\manifest.json"; DestDir: "{app}\Documentation"; Components: documentation; Flags: ignoreversion
 
 [Icons]
-Name: "{group}\Agentic Dexed"; Filename: "{app}\Agentic Dexed.exe"; Components: standalone
+Name: "{group}\Super Bass Fully Agentic Dexed"; Filename: "{app}\Super Bass Fully Agentic Dexed.exe"; Components: standalone
 
 [InstallDelete]
-Type: filesandordirs; Name: "{commoncf}\VST3\Agentic Dexed.vst3"
+Type: filesandordirs; Name: "{commoncf}\VST3\Super Bass Fully Agentic Dexed.vst3"
 

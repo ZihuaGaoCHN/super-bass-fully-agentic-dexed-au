@@ -1,4 +1,4 @@
-# Agentic Dexed pixel UI guide
+# Super Bass Fully Agentic Dexed pixel UI guide
 
 The editor uses a 1280 × 760 reference canvas and a 960 × 640 minimum. At widths below 1200 px, the top bar uses two rows and the synth workspace shows one selected Operator card. The Agent panel and performance keyboard collapse independently. The supported scale choices are 100%, 125%, 150%, and 200%.
 

@@ -1,4 +1,4 @@
-# Agentic Dexed Workbench UI Guide
+# Super Bass Fully Agentic Dexed Workbench UI Guide
 
 The native VST3 and standalone application use one workbench shell on macOS and
 Windows. The visual language is a compact cream, ink, and blue instrument panel.

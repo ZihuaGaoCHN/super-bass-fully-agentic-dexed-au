@@ -23,7 +23,7 @@ public:
     std::function<void()> onShowSystem;
 
 private:
-    WorkbenchLabel brand_ { "FAD OS" };
+    WorkbenchLabel brand_ { "Super Bass Fully Agentic Dexed" };
     WorkbenchButton synth_ { juce::String::fromUTF8("合成器 / SYNTH") };
     WorkbenchButton system_ { "SYSTEM" };
     WorkbenchLabel connection_ { juce::String::fromUTF8("● 本地引擎 / LOCAL ENGINE") };

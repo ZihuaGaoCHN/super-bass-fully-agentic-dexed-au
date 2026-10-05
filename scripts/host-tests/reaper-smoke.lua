@@ -1,5 +1,5 @@
 -- Run with: reaper -newinst -nosplash scripts/host-tests/reaper-smoke.lua
--- The Agentic Dexed VST3 path must already be present in REAPER's VST3 paths.
+-- The Super Bass Fully Agentic Dexed VST3 path must already be present in REAPER's VST3 paths.
 local separator = package.config:sub(1, 1)
 local script_path = debug.getinfo(1, "S").source:gsub("^@", "")
 local script_dir = assert(script_path:match("^(.*[\\/])"))
@@ -7,7 +7,7 @@ local output_dir = script_dir .. ".." .. separator .. ".." .. separator .. "buil
 reaper.RecursiveCreateDirectory(output_dir, 0)
 
 local result_path = output_dir .. separator .. "reaper-smoke-result.txt"
-local project_path = output_dir .. separator .. "Agentic-Dexed-REAPER-Smoke.rpp"
+local project_path = output_dir .. separator .. "Super-Bass-Fully-Agentic-Dexed-REAPER-Smoke.rpp"
 local render_dir = output_dir .. separator .. "render"
 reaper.RecursiveCreateDirectory(render_dir, 0)
 
@@ -29,10 +29,10 @@ end
 
 local function add_agentic_dexed(track)
   local names = {
-    "VST3i: Agentic Dexed (Agentic Dexed)",
-    "VST3: Agentic Dexed (Agentic Dexed)",
-    "Agentic Dexed (Agentic Dexed)",
-    "Agentic Dexed"
+    "VST3i: Super Bass Fully Agentic Dexed (Super Bass Fully Agentic Dexed)",
+    "VST3: Super Bass Fully Agentic Dexed (Super Bass Fully Agentic Dexed)",
+    "Super Bass Fully Agentic Dexed (Super Bass Fully Agentic Dexed)",
+    "Super Bass Fully Agentic Dexed"
   }
   for _, name in ipairs(names) do
     local fx = reaper.TrackFX_AddByName(track, name, false, 1)
@@ -54,7 +54,7 @@ record("track-created", track ~= nil, "track 1")
 local fx, requested_name = add_agentic_dexed(track)
 record("plugin-scan-and-load", fx >= 0, requested_name)
 if fx < 0 then
-  reaper.Undo_EndBlock("Agentic Dexed REAPER smoke", -1)
+  reaper.Undo_EndBlock("Super Bass Fully Agentic Dexed REAPER smoke", -1)
   reaper.PreventUIRefresh(-1)
   finish()
   return
@@ -62,7 +62,7 @@ end
 
 local _, fx_name = reaper.TrackFX_GetFXName(track, fx, "")
 local parameter_count = reaper.TrackFX_GetNumParams(track, fx)
-record("plugin-identity", fx_name:find("Agentic Dexed", 1, true) ~= nil, fx_name)
+record("plugin-identity", fx_name:find("Super Bass Fully Agentic Dexed", 1, true) ~= nil, fx_name)
 record("parameter-discovery", parameter_count > 0, parameter_count)
 
 reaper.TrackFX_Show(track, fx, 3)
@@ -126,7 +126,7 @@ if chunk_ok and fuzzed > 0 then
 end
 record("fx-state-restore", restore_ok, "exact track state chunk round trip")
 
-reaper.Undo_EndBlock("Agentic Dexed REAPER smoke", -1)
+reaper.Undo_EndBlock("Super Bass Fully Agentic Dexed REAPER smoke", -1)
 reaper.PreventUIRefresh(-1)
 finish()
 reaper.UpdateArrange()

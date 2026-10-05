@@ -16,7 +16,7 @@ done
 
 mkdir -p "${output_root}"
 output_root="$(cd "${output_root}" && pwd)"
-stage_name="Agentic-Dexed-${version}-source"
+stage_name="Super-Bass-Fully-Agentic-Dexed-${version}-source"
 stage="${output_root}/${stage_name}"
 case "${stage}" in "${output_root}"/*) ;; *) echo "Unsafe source stage path" >&2; exit 2 ;; esac
 rm -rf "${stage}"
@@ -49,7 +49,7 @@ done <<< "${submodule_status}"
 root_commit="$(git -C "${repo_root}" rev-parse HEAD)"
 manifest="${stage}/source-manifest.json"
 {
-    printf '{\n  "product": "Agentic Dexed",\n  "version": "%s",\n' "${version}"
+    printf '{\n  "product": "Super Bass Fully Agentic Dexed",\n  "version": "%s",\n' "${version}"
     printf '  "root_commit": "%s",\n  "submodules": [\n' "${root_commit}"
     index=0
     while IFS= read -r line; do

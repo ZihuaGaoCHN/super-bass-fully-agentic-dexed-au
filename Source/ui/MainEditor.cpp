@@ -38,7 +38,7 @@ MainEditor::MainEditor(DexedAudioProcessor& processor, bool persistPreferences)
       keyboard_(processor.keyboardState,
                 juce::MidiKeyboardComponent::horizontalKeyboard)
 {
-    setName(juce::String::fromUTF8("Agentic Dexed 工作台 / WORKBENCH"));
+    setName(juce::String::fromUTF8("Super Bass Fully Agentic Dexed 工作台 / WORKBENCH"));
     setTitle(getName());
     setAccessible(true);
     setWantsKeyboardFocus(true);

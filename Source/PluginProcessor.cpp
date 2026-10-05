@@ -917,14 +917,14 @@ void DexedAudioProcessor::publishPerformanceConfiguration(
 
 float DexedAudioProcessor::agenticHostParameterNormalized(int hostIndex) const {
     if (hostIndex < 0 || hostIndex >= ctrl.size() || agenticParameterStore_ == nullptr)
-        throw std::out_of_range("Agentic Dexed host parameter index");
+        throw std::out_of_range("Super Bass Fully Agentic Dexed host parameter index");
     return static_cast<float>(agenticParameterStore_->normalizedHostValue(hostIndex));
 }
 
 void DexedAudioProcessor::setAgenticHostParameterNormalized(
     int hostIndex, float normalized) {
     if (hostIndex < 0 || hostIndex >= ctrl.size())
-        throw std::out_of_range("Agentic Dexed host parameter index");
+        throw std::out_of_range("Super Bass Fully Agentic Dexed host parameter index");
     const auto previousSuppression = suppressAtomicHostWrite_;
     suppressAtomicHostWrite_ = true;
     setParameterNotifyingHost(hostIndex, normalized);

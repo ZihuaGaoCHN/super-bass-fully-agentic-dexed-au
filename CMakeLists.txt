@@ -5,10 +5,10 @@ if(CMAKE_HOST_APPLE)
         if(DEFINED ENV{MACOSX_DEPLOYMENT_TARGET}
            AND NOT "$ENV{MACOSX_DEPLOYMENT_TARGET}" STREQUAL "")
             set(CMAKE_OSX_DEPLOYMENT_TARGET "$ENV{MACOSX_DEPLOYMENT_TARGET}" CACHE STRING
-                "Minimum macOS version supported by Agentic Dexed")
+                "Minimum macOS version supported by Super Bass Fully Agentic Dexed")
         else()
             set(CMAKE_OSX_DEPLOYMENT_TARGET "11.0" CACHE STRING
-                "Minimum macOS version supported by Agentic Dexed")
+                "Minimum macOS version supported by Super Bass Fully Agentic Dexed")
         endif()
     endif()
     set(ENV{MACOSX_DEPLOYMENT_TARGET} "${CMAKE_OSX_DEPLOYMENT_TARGET}")
@@ -69,7 +69,7 @@ add_subdirectory(libs)
 add_subdirectory(assets)
 add_subdirectory(Source)
 
-option(AGENTIC_DEXED_BUILD_TESTS "Build Agentic Dexed test targets" ON)
+option(AGENTIC_DEXED_BUILD_TESTS "Build Super Bass Fully Agentic Dexed test targets" ON)
 if(AGENTIC_DEXED_BUILD_TESTS)
     enable_testing()
     add_subdirectory(Tests)

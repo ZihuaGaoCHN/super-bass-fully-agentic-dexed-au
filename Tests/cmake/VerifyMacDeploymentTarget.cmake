@@ -24,4 +24,4 @@ if(NOT root_cmake MATCHES "if\\(CMAKE_HOST_APPLE\\)")
     message(FATAL_ERROR "Pre-project macOS detection must use CMAKE_HOST_APPLE")
 endif()
 
-message(STATUS "Agentic Dexed macOS deployment target verified")
+message(STATUS "Super Bass Fully Agentic Dexed macOS deployment target verified")

@@ -15,8 +15,8 @@ if (-not (Test-Path -LiteralPath $buildRoot -PathType Container)) {
 }
 
 $artifacts = Join-Path $buildRoot "Source\AgenticDexed_artefacts\Release"
-$vst3 = Join-Path $artifacts "VST3\Agentic Dexed.vst3"
-$standalone = Join-Path $artifacts "Standalone\Agentic Dexed.exe"
+$vst3 = Join-Path $artifacts "VST3\Super Bass Fully Agentic Dexed.vst3"
+$standalone = Join-Path $artifacts "Standalone\Super Bass Fully Agentic Dexed.exe"
 if (-not (Test-Path -LiteralPath $vst3 -PathType Container)) {
     throw "Release VST3 bundle does not exist: $vst3"
 }
@@ -26,7 +26,7 @@ if (-not $SkipStandalone -and -not (Test-Path -LiteralPath $standalone -PathType
 
 $outputRoot = [IO.Path]::GetFullPath($OutputDirectory)
 New-Item -ItemType Directory -Force -Path $outputRoot | Out-Null
-$stageName = "Agentic-Dexed-$Version-windows-x64"
+$stageName = "Super-Bass-Fully-Agentic-Dexed-$Version-windows-x64"
 $stage = Join-Path $outputRoot $stageName
 $safePrefix = $outputRoot.TrimEnd('\') + '\'
 if (-not $stage.StartsWith($safePrefix, [StringComparison]::OrdinalIgnoreCase)) {
@@ -40,7 +40,7 @@ New-Item -ItemType Directory -Force -Path (Join-Path $stage "VST3") | Out-Null
 Copy-Item -LiteralPath $vst3 -Destination (Join-Path $stage "VST3") -Recurse
 if (-not $SkipStandalone) {
     New-Item -ItemType Directory -Force -Path (Join-Path $stage "Standalone") | Out-Null
-    Copy-Item -LiteralPath $standalone -Destination (Join-Path $stage "Standalone\Agentic Dexed.exe")
+    Copy-Item -LiteralPath $standalone -Destination (Join-Path $stage "Standalone\Super Bass Fully Agentic Dexed.exe")
 }
 foreach ($document in @("LICENSE", "THIRD_PARTY_NOTICES.md", "README.md")) {
     Copy-Item -LiteralPath (Join-Path $repositoryRoot $document) -Destination (Join-Path $stage $document)
@@ -59,17 +59,22 @@ function Assert-X64Pe([string] $Path, [string] $Label) {
     if ($machine -ne 0x8664) {
         throw ("Packaged $Label has PE machine 0x{0:x4}; expected x86_64 0x8664" -f $machine)
     }
+    $metadata = (Get-Item -LiteralPath $Path).VersionInfo
+    if ($metadata.ProductName -ne 'Super Bass Fully Agentic Dexed' -or
+        $metadata.FileDescription -ne 'Super Bass Fully Agentic Dexed') {
+        throw "Packaged $Label still contains stale Windows product metadata"
+    }
     return "$Label PE machine: x86_64 (0x8664)"
 }
 
 $architectureReport = @(
     Assert-X64Pe `
-        (Join-Path $stage "VST3\Agentic Dexed.vst3\Contents\x86_64-win\Agentic Dexed.vst3") `
+        (Join-Path $stage "VST3\Super Bass Fully Agentic Dexed.vst3\Contents\x86_64-win\Super Bass Fully Agentic Dexed.vst3") `
         "VST3"
 )
 if (-not $SkipStandalone) {
     $architectureReport += Assert-X64Pe `
-        (Join-Path $stage "Standalone\Agentic Dexed.exe") `
+        (Join-Path $stage "Standalone\Super Bass Fully Agentic Dexed.exe") `
         "Standalone"
 }
 Set-Content -LiteralPath (Join-Path $stage "architecture.txt") -Value $architectureReport -Encoding utf8
