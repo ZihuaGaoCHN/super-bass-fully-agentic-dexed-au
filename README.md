@@ -1,4 +1,4 @@
-# super-bass-fully-agentic-dexed
+# Super Bass Fully Agentic Dexed
 
 基于 Dexed 的原生 FM 合成器：VST3 + 独立应用，支持 Windows x64 和 Apple Silicon macOS，以及自然语言音色设计。
 
