@@ -54,6 +54,12 @@ public:
     void setKeyboardExpanded(bool);
     void setReducedMotion(bool);
     void setScalePercent(int);
+    void setExternalWindowSize(int width, int height)
+    {
+        externalWindowSize_ = true;
+        preferences_.width = width;
+        preferences_.height = height;
+    }
     void setScaleRequestCallback(std::function<void(int)> callback)
     {
         scaleRequest_ = std::move(callback);
@@ -123,6 +129,7 @@ private:
 
     DexedAudioProcessor& processor_;
     bool persistPreferences_ = true;
+    bool externalWindowSize_ = false;
     AgenticEditorPreferences preferences_;
     agent::AgentPreferences agentPreferences_;
     WorkbenchLookAndFeel lookAndFeel_;

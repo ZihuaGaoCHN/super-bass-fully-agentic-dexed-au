@@ -14,7 +14,7 @@ class DexedAudioProcessorEditor final : public juce::AudioProcessorEditor,
                                         private juce::KeyListener
 {
 public:
-    explicit DexedAudioProcessorEditor(DexedAudioProcessor*);
+    explicit DexedAudioProcessorEditor(DexedAudioProcessor*, bool persistPreferences = true);
     ~DexedAudioProcessorEditor() override;
 
     agentic_dexed::ui::MainEditor& mainEditor() noexcept { return *mainEditor_; }

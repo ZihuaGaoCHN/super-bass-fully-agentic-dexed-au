@@ -217,7 +217,7 @@ struct SoundPage::OperatorDetail final : public juce::Component
         envelope.setBounds(area);
         layoutGroup(frequency, DetailGroup::frequency, 3, 24);
         layoutGroup(scaling, DetailGroup::scaling, 3, 0);
-        layoutGroup(envelope, DetailGroup::envelope, 5, 44);
+        layoutGroup(envelope, DetailGroup::envelope, 5, 0);
     }
 
     void layoutGroup(WorkbenchPanel& panel, DetailGroup group,
@@ -225,6 +225,13 @@ struct SoundPage::OperatorDetail final : public juce::Component
     {
         auto area = panel.getLocalBounds().reduced(8);
         area.removeFromTop(24);
+        if (group == DetailGroup::envelope)
+        {
+            // Keep a tall graph alongside the two rows without shrinking knobs.
+            auto graph = area.removeFromLeft(area.getWidth() * 30 / 100);
+            envelopeDisplay.setBounds(graph.withHeight(std::min(220, graph.getHeight())));
+            area.removeFromLeft(8);
+        }
         if (leadingHeight > 0)
         {
             if (group == DetailGroup::frequency)

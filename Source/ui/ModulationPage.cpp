@@ -205,7 +205,7 @@ void ModulationPage::resized()
     matrix_.setBounds(area.removeFromLeft(leftWidth));
     area.removeFromLeft(8);
     pitchBehaviour_.setBounds(area);
-    layoutPanel(pitchEnvelope_, pitchEntries_, 4, 28);
+    layoutPanel(pitchEnvelope_, pitchEntries_, 4, 1);
     layoutPanel(lfo_, lfoEntries_, 4);
     layoutPanel(pitchBehaviour_, behaviourEntries_, 4);
 }
@@ -218,8 +218,9 @@ void ModulationPage::layoutPanel(
     area.removeFromTop(24);
     if (leadingHeight > 0)
     {
-        pitchEnvelopeDisplay_.setBounds(area.removeFromTop(leadingHeight));
-        area.removeFromTop(4);
+        auto graph = area.removeFromLeft(area.getWidth() * 38 / 100);
+        pitchEnvelopeDisplay_.setBounds(graph.withHeight(std::min(220, graph.getHeight())));
+        area.removeFromLeft(8);
     }
     if (entries.empty())
         return;

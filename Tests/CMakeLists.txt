@@ -42,6 +42,7 @@ target_sources(AgenticDexedTests PRIVATE
     GeneratePageTests.cpp
     WorkbenchShellTests.cpp
     MainEditorTests.cpp
+    EditorSizingTests.cpp
     WorkbenchAccessibilityTests.cpp
     WorkbenchRenderTests.cpp
     WorkbenchUpdateBudgetTests.cpp

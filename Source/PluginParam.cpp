@@ -845,10 +845,17 @@ void DexedAudioProcessor::loadPreference() {
         zoomFactor = prop.getDoubleValue(String("zoomFactor"));
     }
 
+   #if JUCE_WINDOWS
+    agenticEditorPreferences.width = juce::jlimit(
+        640, 3840, prop.getIntValue("agenticEditorWidth", 1280));
+    agenticEditorPreferences.height = juce::jlimit(
+        480, 2400, prop.getIntValue("agenticEditorHeight", 760));
+   #else
     agenticEditorPreferences.width = juce::jlimit(
         960, 2560, prop.getIntValue("agenticEditorWidth", 1280));
     agenticEditorPreferences.height = juce::jlimit(
         640, 1520, prop.getIntValue("agenticEditorHeight", 760));
+   #endif
     const auto storedScale = prop.getIntValue("agenticEditorScale", 100);
     agenticEditorPreferences.scalePercent =
         storedScale == 125 || storedScale == 150 || storedScale == 200

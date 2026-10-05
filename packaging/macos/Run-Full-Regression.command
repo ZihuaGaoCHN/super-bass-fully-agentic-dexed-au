@@ -17,7 +17,7 @@ finish() {
     read -r
     exit "$result_code"
 }
-printf 'Super Bass Fully Agentic Dexed — R5 branding native Mac regression\n' > "$report"
+printf 'Super Bass Fully Agentic Dexed — R6 responsive UI native Mac regression\n' > "$report"
 if [[ "$(uname -m)" != arm64 ]]; then
     printf '请使用原生 Apple Silicon 终端运行，不能使用 Rosetta。\n' | tee -a "$report"
     finish 2

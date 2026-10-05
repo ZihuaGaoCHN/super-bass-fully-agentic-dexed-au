@@ -410,6 +410,8 @@ void MainEditor::saveAgentPreferences()
 
 void MainEditor::captureSize()
 {
+    if (externalWindowSize_)
+        return;
     if (getWidth() >= WorkbenchTheme::minimumWidth)
         preferences_.width = juce::jlimit(
             WorkbenchTheme::minimumWidth, 2560, getWidth());
