@@ -40,10 +40,20 @@ marks the key as available to the current process only.
 
 ## Responsive layout
 
-The supported minimum editor size is 960 x 640. The reference layout is
-1280 x 760, and the large verification layout is 1920 x 1140. Narrow pages use
-contained scrolling instead of shrinking controls below their usable size. The
-render suite also verifies 100%, 125%, 150%, and 200% desktop scale presets.
+The reference layout is 1280 x 760 with a minimum logical canvas of 960 x 760.
+On Windows, resizing scales the complete workbench (text, controls, curves, and
+hit areas) together. Windows normally permits windows down to 640 x 480; the
+minimum and restored size also fit smaller available desktop areas, leaving
+space for the title bar and taskbar. JUCE handles monitor DPI separately, so
+the workbench does not apply the monitor's DPI factor twice. Actual window
+dimensions are saved separately from the scaled logical canvas.
+
+macOS keeps its existing window sizing. Both platforms show taller operator
+and pitch envelopes beside their parameter controls, including with the
+keyboard expanded. Parameter pages fit without whole-page scrolling.
+The sizing suite covers six window sizes and desktop work areas corresponding
+to 100%, 125%, 150%, and 200% DPI. Actual multi-monitor hardware behavior still
+requires native validation on the relevant displays.
 
 All enabled interactive controls expose a readable name and keyboard focus.
 Normal text meets a 4.5:1 contrast target. Warning and error surfaces carry text

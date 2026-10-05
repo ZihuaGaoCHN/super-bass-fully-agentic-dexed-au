@@ -1,6 +1,6 @@
 # Super Bass Fully Agentic Dexed pixel UI guide
 
-The editor uses a 1280 × 760 reference canvas and a 960 × 640 minimum. At widths below 1200 px, the top bar uses two rows and the synth workspace shows one selected Operator card. The Agent panel and performance keyboard collapse independently. The supported scale choices are 100%, 125%, 150%, and 200%.
+The editor uses a 1280 × 760 reference canvas and a 960 × 760 minimum logical layout. Windows fits the complete workbench to the window and available desktop area, while macOS retains its existing window sizing. Operator and pitch envelopes use tall graphs beside their controls. See [Workbench UI Guide](WorkbenchUiGuide.md) for current sizing and validation details.
 
 ## Visual language
 
