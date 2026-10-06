@@ -15,7 +15,7 @@ GNU GPL version 3，沿用 Dexed 的开源许可，保留上游与第三方声�
 
 ## 发布状态
 
-当前同步的是 R6 预发布候选，仓库仍为私有。Windows 回归与 VST3 检查通过；Mac 原生运行时 19,589 项检查和 VST3 检查通过，但真实模型测试因测试进程未取得密钥而尚未运行。详细验证范围见 release 分支说明。
+本项目以 GPL v3 公开源码，当前提供 R6 预发布候选。Windows 回归与 VST3 检查通过；Mac 原生运行时 19,589 项检查和 VST3 检查通过，但真实模型测试因测试进程未取得密钥而尚未运行。详细验证范围见 release 分支说明。
 
 main 分支只包含此 README；Windows 与 Apple Silicon 源码分别位于对应分支；两平台构建产物已放入 release 分支，并提供 GitHub 预发布下载。完整源码包包含构建所需的 14 个固定版本依赖。GitHub Actions 保持关闭。
 
