@@ -31,4 +31,6 @@ Corresponding application source: commit `41ee5c24c3756b24644b4a30f88af140868615
 
 The release asset `Super-Bass-Fully-Agentic-Dexed-1.0.1-source.tar.gz` contains that source and all 14 pinned recursive dependencies. GitHub's automatically generated source archive for the release tag contains the release branch, so use the explicitly named complete source asset to build the application.
 
+The complete source asset clears the public Google API key fields in three upstream JUCE Android demo configuration files. This packaging transformation is recorded in `source-manifest.json`; native application code and Windows/macOS binaries are unchanged.
+
 GNU GPL version 3. See [LICENSE](./LICENSE) and [third-party notices](./THIRD_PARTY_NOTICES.md). API keys are supplied by each user and are not distributed. GitHub Actions remains disabled; these artifacts were built and checked outside Actions.
