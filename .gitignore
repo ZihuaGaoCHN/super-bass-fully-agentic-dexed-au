@@ -23,3 +23,5 @@ ignore/
 # Downloaded release-validation tools
 /tools/pluginval/cache/
 /dist/
+# Local user sound preferences must never be committed.
+synth.md

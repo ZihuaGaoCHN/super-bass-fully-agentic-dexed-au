@@ -22,6 +22,7 @@ target_sources(AgenticDexedTests PRIVATE
     ChatCompletionsClientTests.cpp
     CredentialStoreTests.cpp
     AgentPreferencesTests.cpp
+    SynthMemoryTests.cpp
     AgentToolSchemaTests.cpp
     AgentToolDispatcherTests.cpp
     AuditionAnalyzerTests.cpp

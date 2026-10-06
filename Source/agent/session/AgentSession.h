@@ -11,6 +11,7 @@
 namespace agentic_dexed::agent::model { class IModelClient; }
 namespace agentic_dexed::agent::tools { class AgentToolDispatcher; }
 namespace agentic_dexed::security { class ICredentialStore; }
+namespace agentic_dexed::agent::memory { class SynthMemory; }
 
 namespace agentic_dexed::agent::session
 {
@@ -87,7 +88,8 @@ public:
     AgentSession(
         model::IModelClient& modelClient,
         tools::AgentToolDispatcher& toolDispatcher,
-        security::ICredentialStore& credentialStore);
+        security::ICredentialStore& credentialStore,
+        std::shared_ptr<memory::SynthMemory> memory = {});
     ~AgentSession();
 
     AgentSession(const AgentSession&) = delete;

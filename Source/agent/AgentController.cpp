@@ -1,6 +1,7 @@
 #include "AgentController.h"
 
 #include "AgentLimits.h"
+#include "memory/SynthMemory.h"
 #include "model/ChatCompletionsClient.h"
 #include "model/ResponsesClient.h"
 #include "http/JuceHttpTransport.h"
@@ -185,7 +186,7 @@ public:
           persistentCredentials_(validCredentialStore(std::move(credentialStore))),
           credentials_(*persistentCredentials_),
           dispatcher_(registry, stateService, audition_, *this),
-          session_(router_, dispatcher_, credentials_),
+          session_(router_, dispatcher_, credentials_, std::make_shared<memory::SynthMemory>()),
           connectionWorker_([this] { connectionWorkerLoop(); })
     {
     }

@@ -29,15 +29,16 @@ endfunction()
 
 assert_workflow_contains("  windows-x64:\n")
 assert_workflow_contains("    runs-on: windows-2022\n")
-assert_workflow_contains("  macos-x86_64:\n")
-assert_workflow_contains("    runs-on: macos-15-intel\n")
-assert_workflow_contains("          -DCMAKE_OSX_ARCHITECTURES=x86_64\n")
 assert_workflow_contains("  macos-arm64:\n")
 assert_workflow_contains("    runs-on: macos-15\n")
 assert_workflow_contains("          -DCMAKE_OSX_ARCHITECTURES=arm64\n")
-assert_workflow_contains("          tar -czf agentic-dexed-macos-x86_64.tar.gz\n")
-assert_workflow_contains("          path: agentic-dexed-macos-x86_64.tar.gz\n")
 assert_workflow_contains("          tar -czf agentic-dexed-macos-arm64.tar.gz\n")
 assert_workflow_contains("          path: agentic-dexed-macos-arm64.tar.gz\n")
+
+# The published product supports Windows x64 and native Apple Silicon only.
+string(FIND "${workflow}" "-DCMAKE_OSX_ARCHITECTURES=x86_64" intel_position)
+if(NOT intel_position EQUAL -1)
+    message(FATAL_ERROR "macOS workflow must build the native Apple Silicon product")
+endif()
 
 message(STATUS "Super Bass Fully Agentic Dexed build workflow verified")

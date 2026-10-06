@@ -4,6 +4,7 @@
 #include "PluginProcessor.h"
 
 #include "agent/session/AgentSession.h"
+#include "agent/memory/SynthMemory.h"
 #include "agent/AgentLimits.h"
 #include "agent/AgentController.h"
 #include "ui/AgentPanel.h"
@@ -173,10 +174,11 @@ public:
 
 struct SessionHarness
 {
-    explicit SessionHarness(std::vector<ModelScript> scripts)
+    explicit SessionHarness(std::vector<ModelScript> scripts,
+        std::shared_ptr<memory::SynthMemory> memory = {})
         : backend(registry), state(registry, backend), model(std::move(scripts)),
           dispatcher(registry, state, audition, save),
-          session(model, dispatcher, credentials)
+          session(model, dispatcher, credentials, std::move(memory))
     {
         credentials.store("provider.test", "sk-session-secret");
     }
@@ -475,6 +477,48 @@ public:
 
     void runTest() override
     {
+        beginTest("Memory tool persists Chinese preferences and next session recalls them as data");
+        {
+            const auto directory = juce::File::getSpecialLocation(juce::File::tempDirectory)
+                .getNonexistentChildFile("sbfad-session-memory", "", false);
+            auto memory = std::make_shared<memory::SynthMemory>(directory.getChildFile("synth.md"));
+            SessionHarness first({ completedTool("remember", "m1", "update_synth_memory",
+                u8R"({"operation":"remember","key":"pad_brightness","preference":"偏好温暖柔和的 pad","evidence":"我通常喜欢温暖柔和的 pad"})"),
+                completedText("done", "Remembered") }, memory);
+            auto request = first.request();
+            request.prompt = u8"记住，我通常喜欢温暖柔和的 pad";
+            first.session.start(request);
+            expect(pumpUntil(first.session, terminal));
+            expect(first.session.snapshot().state == AgentSessionState::completed);
+            expect(memory->read().text.contains(juce::String::fromUTF8("偏好温暖柔和")));
+            expectEquals(first.backend.writes.load(), 0);
+            SessionHarness next({ completedText("next", "Understood") }, memory);
+            auto overrideRequest = next.request();
+            overrideRequest.prompt = u8"这一次要明亮的 pad，不要修改长期偏好";
+            const auto before = memory->read().text;
+            next.session.start(overrideRequest);
+            expect(pumpUntil(next.session, terminal));
+            {
+                std::lock_guard<std::mutex> lock(next.model.mutex);
+                const auto userContext = juce::JSON::parse(juce::String(next.model.capturedMessages.front()[1].text));
+                expect(userContext["synth_memory"].toString().contains(juce::String::fromUTF8("温暖柔和")));
+                expectEquals(userContext["current_request"].toString(), juce::String(overrideRequest.prompt));
+                expect(juce::String(next.model.firstSystemPrompt).contains("CURRENT user request"));
+            }
+            expectEquals(memory->read().text, before);
+            SessionHarness rejected({ completedTool("bad", "m2", "update_synth_memory",
+                R"({"operation":"remember","key":"lead","preference":"bright lead","evidence":"I always like bright leads"})"),
+                completedText("done", "No preference stored") }, memory);
+            rejected.session.start(rejected.request());
+            expect(pumpUntil(rejected.session, terminal));
+            expectEquals(memory->read().text, before);
+            bool sawFailure = false;
+            for (const auto& entry : rejected.session.snapshot().transcript)
+                if (entry.kind == AgentTranscriptKind::toolResult && !entry.success) sawFailure = true;
+            expect(sawFailure);
+            expect(directory.deleteRecursively());
+        }
+
         beginTest("Session preserves one assistant turn with reasoning and parallel calls");
         ModelScript parallel {{ ModelStarted { "parallel" },
             ModelReasoningDelta { "opaque-continuation" }, ModelTextDelta { "Checking" },
@@ -777,4 +821,58 @@ public:
 };
 
 AgentSessionTests agentSessionTests;
+
+class LiveMemoryTests final : public juce::UnitTest
+{
+public:
+    LiveMemoryTests() : juce::UnitTest("Real provider local memory", "LiveMemory") {}
+    void runTest() override
+    {
+        beginTest("Real provider remembers, recalls and clears Chinese preferences without changing sound");
+        const auto key = juce::SystemStats::getEnvironmentVariable("DEEPSEEK_API_KEY", "");
+        expect(key.isNotEmpty(), "DEEPSEEK_API_KEY is required for this opt-in test");
+        if (key.isEmpty()) return;
+        const auto directory = juce::File::getSpecialLocation(juce::File::tempDirectory)
+            .getNonexistentChildFile("sbfad-live-memory", "", false);
+        struct Cleanup { juce::File directory; ~Cleanup() { directory.deleteRecursively(); } } cleanup { directory };
+        auto memory = std::make_shared<memory::SynthMemory>(directory.getChildFile("synth.md"));
+        ParameterRegistry registry = ParameterRegistry::createDexed();
+        SessionBackend backend(registry);
+        SynthStateService state(registry, backend);
+        SessionAudition audition;
+        SessionSave save;
+        AgentToolDispatcher dispatcher(registry, state, audition, save);
+        MemoryCredentialStore credentials;
+        credentials.store("provider.test", key.toStdString());
+        http::JuceHttpTransport transport;
+        ChatCompletionsClient model(transport);
+        auto run = [&](const char* prompt) {
+            AgentSession session(model, dispatcher, credentials, memory);
+            UserAgentRequest request;
+            request.prompt = prompt;
+            request.credentialId = "provider.test";
+            request.preferences.protocol = ProviderProtocol::chatCompletions;
+            request.preferences.baseUrl = "https://api.deepseek.com";
+            request.preferences.model = "deepseek-flash";
+            session.start(request);
+            expect(pumpUntil(session, terminal, 120s), "Live memory request timed out");
+            const auto snapshot = session.snapshot();
+            expect(snapshot.state == AgentSessionState::completed, juce::String(snapshot.errorCode));
+            return snapshot;
+        };
+        const auto remember = run(u8"请记住我的长期音色偏好：我通常喜欢温暖柔和、低频饱满的 pad，避免刺耳高频。这次只保存这个偏好，不修改音色。");
+        bool wrote = false;
+        for (const auto& entry : remember.transcript)
+            if (entry.kind == AgentTranscriptKind::toolCall && entry.toolName == "update_synth_memory") wrote = true;
+        expect(wrote);
+        const auto saved = memory->read(key);
+        expect(saved.ok && saved.text.contains("- ["));
+        const auto recalled = run(u8"我之前让你记住的 pad 偏好是什么？只用中文回答，不修改音色或记忆。");
+        expect(!recalled.finalText.empty());
+        expectEquals(memory->read(key).text, saved.text);
+        run(u8"请清空你记住的全部长期音色偏好，这次只清空记忆，不修改音色。");
+        expect(!memory->read(key).text.contains("- ["));
+        expectEquals(backend.writes.load(), 0);
+    }
+} liveMemoryTests;
 }

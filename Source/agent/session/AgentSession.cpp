@@ -1,6 +1,7 @@
 #include "AgentSession.h"
 
 #include "AgentPrompt.h"
+#include "../memory/SynthMemory.h"
 #include "../AgentLimits.h"
 #include "../JsonAccess.h"
 #include "../model/IModelClient.h"
@@ -188,9 +189,10 @@ public:
     Impl(
         model::IModelClient& modelClient,
         tools::AgentToolDispatcher& toolDispatcher,
-        security::ICredentialStore& credentialStore)
+        security::ICredentialStore& credentialStore,
+        std::shared_ptr<memory::SynthMemory> memory)
         : modelClient_(modelClient), toolDispatcher_(toolDispatcher),
-          credentialStore_(credentialStore), listenerBridge_(std::make_shared<ListenerBridge>()),
+          credentialStore_(credentialStore), memory_(std::move(memory)), listenerBridge_(std::make_shared<ListenerBridge>()),
           callbackAlive_(std::make_shared<std::atomic_bool>(true)),
           worker_([this] { workerLoop(); })
     {
@@ -366,9 +368,21 @@ private:
         }
         credential_ = std::move(loaded.secret);
 
-        messages_.push_back({
-            "system", createAgentSystemPrompt(preferences_.applyMode, request.prompt), {}, {} });
-        messages_.push_back({ "user", request.prompt, {}, {} });
+        userPrompt_ = request.prompt;
+        auto systemPrompt = createAgentSystemPrompt(preferences_.applyMode, request.prompt);
+        auto modelPrompt = request.prompt;
+        if (memory_)
+        {
+            systemPrompt += memory::SynthMemory::instructions();
+            const auto saved = memory_->read(juce::String(std::string(credential_.view())));
+            auto* context = new juce::DynamicObject();
+            context->setProperty("synth_memory", saved.ok ? saved.text : juce::String());
+            context->setProperty("memory_available", saved.ok);
+            context->setProperty("current_request", juce::String(request.prompt));
+            modelPrompt = json(juce::var(context));
+        }
+        messages_.push_back({ "system", std::move(systemPrompt), {}, {} });
+        messages_.push_back({ "user", std::move(modelPrompt), {}, {} });
         appendTranscript({ AgentTranscriptKind::user, request.prompt, {}, {}, true });
         startModelRequest();
     }
@@ -395,7 +409,10 @@ private:
         request.authorization = credential_.view();
         request.messages = messages_;
         if (toolIterations_ < limits::maxToolIterations)
+        {
             request.tools = tools::createAgentToolSchemas();
+            if (memory_) request.tools.add(memory::SynthMemory::toolSchema());
+        }
         request.cancellation = cancellation_->token();
 
         const auto generation = generation_;
@@ -561,8 +578,28 @@ private:
             tools::ToolResult result;
             try
             {
-                result = toolDispatcher_.dispatch(
-                    call.name, *parsed.value, call.callId, cancellation_->token());
+                if (memory_ && call.name == "update_synth_memory")
+                {
+                    const auto operation = propertyString(*parsed.value, "operation");
+                    const auto key = propertyString(*parsed.value, "key");
+                    const auto preference = propertyString(*parsed.value, "preference");
+                    const auto evidence = propertyString(*parsed.value, "evidence");
+                    const auto* object = parsed.value->getDynamicObject();
+                    if (!operation || !key || !preference || !evidence || object->getProperties().size() != 4)
+                        result = { call.callId, false, errorObject("invalid_arguments", "Memory requires operation, key, preference and evidence strings"), "invalid_arguments" };
+                    else
+                    {
+                        const auto saved = memory_->update(*operation, *key, *preference, *evidence,
+                            userPrompt_, std::string(credential_.view()));
+                        auto* output = new juce::DynamicObject();
+                        output->setProperty("success", saved.ok);
+                        output->setProperty("message", saved.ok ? juce::String("Local synth preferences updated") : saved.error);
+                        result = { call.callId, saved.ok, juce::var(output), saved.ok ? "" : "memory_error" };
+                    }
+                }
+                else
+                    result = toolDispatcher_.dispatch(
+                        call.name, *parsed.value, call.callId, cancellation_->token());
             }
             catch (...)
             {
@@ -822,6 +859,8 @@ private:
     model::IModelClient& modelClient_;
     tools::AgentToolDispatcher& toolDispatcher_;
     security::ICredentialStore& credentialStore_;
+    std::shared_ptr<memory::SynthMemory> memory_;
+    std::string userPrompt_;
     std::shared_ptr<ListenerBridge> listenerBridge_;
     std::shared_ptr<std::atomic_bool> callbackAlive_;
 
@@ -857,8 +896,9 @@ private:
 AgentSession::AgentSession(
     model::IModelClient& modelClient,
     tools::AgentToolDispatcher& toolDispatcher,
-    security::ICredentialStore& credentialStore)
-    : impl_(std::make_unique<Impl>(modelClient, toolDispatcher, credentialStore))
+    security::ICredentialStore& credentialStore,
+    std::shared_ptr<memory::SynthMemory> memory)
+    : impl_(std::make_unique<Impl>(modelClient, toolDispatcher, credentialStore, std::move(memory)))
 {
 }
 

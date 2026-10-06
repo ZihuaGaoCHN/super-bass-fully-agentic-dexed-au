@@ -158,6 +158,8 @@ target_sources(${BaseTargetName} PRIVATE
 	agent/AgentController.cpp
 	agent/AgentController.h
 	agent/session/AgentPrompt.cpp
+	agent/memory/SynthMemory.cpp
+	agent/memory/SynthMemory.h
 	agent/session/AgentPrompt.h
 	agent/session/AgentSession.cpp
 	agent/session/AgentSession.h

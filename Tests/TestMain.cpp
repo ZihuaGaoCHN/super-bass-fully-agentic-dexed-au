@@ -24,7 +24,7 @@ protected:
 bool matchesFilter(const juce::UnitTest& test, const juce::String& filter)
 {
     // Paid network tests run only when explicitly selected, never in ordinary CTest.
-    if (test.getCategory() == "LiveAgent" && filter != "LiveAgent")
+    if (test.getCategory().startsWith("Live") && filter != test.getCategory())
         return false;
     if (agentic_dexed::test::portableData && test.getCategory() == "SourceAudit")
         return false;
