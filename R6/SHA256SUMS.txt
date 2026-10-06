@@ -1,0 +1,3 @@
+3df105a0f2155d750cdfaf5845a67c77e46688adec9e4ed8d61675de385a616e  Super-Bass-Fully-Agentic-Dexed-windows-x64-R6.zip
+9e98de1edb9d3fafb724c835da18f5543000008ea59c966a87f28251bf53e339  Super-Bass-Fully-Agentic-Dexed-arm64-R6.tar.gz
+55666b0dc3f9acac117007723af028d03004fac152a10450be6d70c1f7b0c217  Super-Bass-Fully-Agentic-Dexed-1.0.1-source.tar.gz
