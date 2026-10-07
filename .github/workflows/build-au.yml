@@ -1,0 +1,55 @@
+name: Build and Release AU Plugin PKG
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: macos-14
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Configure CMake
+        run: |
+          cmake -S . -B build -G "Unix Makefiles" \
+            -DCMAKE_OSX_ARCHITECTURES="arm64" \
+            -DAGENTIC_DEXED_BUILD_TESTS=OFF \
+            -DAGENTIC_DEXED_COPY_PLUGIN_AFTER_BUILD=OFF
+
+      - name: Build AU Target
+        run: cmake --build build --config Release --target AgenticDexed_AU -j 4
+
+      - name: Ad-hoc Code Sign Component
+        run: |
+          codesign --force --deep -s - "build/Source/AgenticDexed_artefacts/AU/Super Bass Fully Agentic Dexed.component"
+
+      - name: Build macOS PKG Installer
+        run: |
+          bash ./packaging/macos/package-au.sh build dist
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
+        with:
+          tag_name: ${{ github.ref_name || 'v1.0.1-au' }}
+          name: "Super Bass Fully Agentic Dexed AU ${{ github.ref_name || 'v1.0.1' }}"
+          body: |
+            ### Super Bass Fully Agentic Dexed - AudioUnit (AU) PKG Installer
+            - 适配 Apple Silicon macOS 原生 AudioUnit 插件 (`.component`)
+            - 兼容 Logic Pro, GarageBand, Ableton Live, Reaper, Bitwig 等主流宿主
+            - 采用 macOS 标准 `.pkg` 安装包，双击即可全自动安装并刷新 AU 缓存
+
+            #### 安装说明 / Installation
+            1. 下载下方 `Super-Bass-Fully-Agentic-Dexed-AU-1.0.1-macOS-arm64.pkg`
+            2. 双击打开安装包，按照提示点击“继续”完成安装
+            3. 打开 Logic Pro 或其他宿主软件即可直接扫描加载！
+          files: dist/*.pkg

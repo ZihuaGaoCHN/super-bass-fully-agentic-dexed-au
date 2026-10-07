@@ -5,7 +5,7 @@ set(AGENTIC_DEXED_TARGET_NAME "AgenticDexed")
 set(AGENTIC_DEXED_BUNDLE_ID "com.agenticdexed.AgenticDexed")
 set(AGENTIC_DEXED_PLUGIN_CODE "AgDx")
 set(AGENTIC_DEXED_MANUFACTURER_CODE "Agnt")
-set(AGENTIC_DEXED_FORMATS Standalone VST3)
+set(AGENTIC_DEXED_FORMATS Standalone VST3 AU)
 
 # JUCE's RC generator only depends on its icon by default. Track product info
 # too, otherwise an incremental rename leaves Windows Details/Task Manager stale.

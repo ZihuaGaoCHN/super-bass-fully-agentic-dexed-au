@@ -18,7 +18,7 @@ assert_equal(AGENTIC_DEXED_TARGET_NAME "AgenticDexed")
 assert_equal(AGENTIC_DEXED_BUNDLE_ID "com.agenticdexed.AgenticDexed")
 assert_equal(AGENTIC_DEXED_PLUGIN_CODE "AgDx")
 assert_equal(AGENTIC_DEXED_MANUFACTURER_CODE "Agnt")
-assert_equal(AGENTIC_DEXED_FORMATS "Standalone;VST3")
+assert_equal(AGENTIC_DEXED_FORMATS "Standalone;VST3;AU")
 assert_equal(AGENTIC_DEXED_COPY_PLUGIN_AFTER_BUILD "OFF")
 
 message(STATUS "Super Bass Fully Agentic Dexed product identity verified")
